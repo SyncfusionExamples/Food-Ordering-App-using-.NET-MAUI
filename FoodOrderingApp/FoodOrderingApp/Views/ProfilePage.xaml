@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:FoodOrderingApp.Models"
+             x:Class="FoodOrderingApp.Views.ProfilePage"
+             Title="My Profile"
+             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
+
+    <Grid RowDefinitions="*" Padding="0">
+        
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="0"
+                          IsRunning="{Binding IsLoading}"
+                          IsVisible="{Binding IsLoading}"
+                          Color="{StaticResource PrimaryColor}"
+                          Scale="1.5"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center"/>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="0" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
+            <VerticalStackLayout Padding="12" Spacing="12">
+
+                <!-- Success Message -->
+                <Border IsVisible="{Binding ShowSuccessMessage}"
+                       Stroke="#16A34A" BackgroundColor="#E8F5E9" StrokeShape="RoundRectangle 8" Padding="12" Margin="0,0,0,8">
+                    <Label Text="{Binding SuccessMessage}" 
+                           TextColor="#16A34A" FontSize="13" FontAttributes="Bold"/>
+                </Border>
+
+                <!-- Error Message -->
+                <Border IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
+                       Stroke="#FF6B6B" BackgroundColor="#FFE0E0" StrokeShape="RoundRectangle 8" Padding="12" Margin="0,0,0,8">
+                    <Label Text="{Binding ErrorMessage}" 
+                           TextColor="#CC0000" FontSize="12"/>
+                </Border>
+
+                <!-- Profile Info Card -->
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="12">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+
+                        <!-- Profile Header -->
+                        <Label Grid.Column="0" Grid.Row="0"
+                               Text="Profile Information" FontSize="14" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+
+                        <Button Grid.Column="1" Grid.Row="0"
+                                Text="{Binding IsEditMode, StringFormat='{0:ischecked=Save,ischecked=Edit}'}"
+                                Command="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}, ConverterParameter='Edit'}"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource PrimaryColor}"
+                                FontSize="12"
+                                Padding="8,4"
+                                IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}"/>
+
+                        <!-- Full Name -->
+                        <Label Grid.Column="0" Grid.Row="1"
+                               Text="Full Name" FontSize="11"
+                               TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                        
+                        <Entry Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+                               Text="{Binding FullName}"
+                               IsReadOnly="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}"
+                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                               Placeholder="Enter full name"
+                               PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}"
+                               Margin="0,0,0,8"/>
+
+                        <!-- Email -->
+                        <Label Grid.Column="0" Grid.Row="3"
+                               Text="Email" FontSize="11"
+                               TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+
+                        <Entry Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
+                               Text="{Binding Email}"
+                               IsReadOnly="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}"
+                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                               Placeholder="Enter email"
+                               PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}"
+                               Margin="8,10"/>
+                    </Grid>
+                </Border>
+
+                <!-- Edit/Discard Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsEditMode}">
+                    <Button Grid.Column="0"
+                            Text="Discard"
+                            Command="{Binding DiscardChangesCommand}"
+                            BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                            TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            Padding="0,12"
+                            CornerRadius="8"/>
+                    
+                    <Button Grid.Column="1"
+                            Text="Save Changes"
+                            Command="{Binding SaveProfileCommand}"
+                            BackgroundColor="{StaticResource PrimaryColor}"
+                            TextColor="White"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            Padding="0,12"
+                            CornerRadius="8"/>
+                </Grid>
+
+                <!-- Stats Card -->
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="12">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" Padding="0">
+
+                        <!-- Join Date -->
+                        <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="4">
+                            <Label Text="Joined" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Label Text="{Binding JoinDate}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Total Orders -->
+                        <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="4">
+                            <Label Text="Total Orders" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Label Text="{Binding TotalOrders}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Rewards Points -->
+                        <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="4">
+                            <Label Text="Rewards Points" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Label FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource SecondaryColor}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="🎁 "/>
+                                        <Span Text="{Binding RewardsPoints}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+
+                        <!-- Divider -->
+                        <BoxView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                                Color="{AppThemeBinding Light=#F0F0F0, Dark=#2A2A2A}"
+                                HeightRequest="1"
+                                Margin="0,8,0,0"
+                                VerticalOptions="End"/>
+                    </Grid>
+                </Border>
+
+                <!-- Change Password Section -->
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="12">
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label Text="Security" FontSize="14" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+
+                        <!-- Old Password -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Current Password" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Entry IsPassword="True"
+                                   Text="{Binding OldPassword}"
+                                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                   Placeholder="Enter current password"
+                                   PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}"
+                                   Margin="8,10"/>
+                        </VerticalStackLayout>
+
+                        <!-- New Password -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="New Password" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Entry IsPassword="True"
+                                   Text="{Binding NewPassword}"
+                                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                   Placeholder="Enter new password (min 8 chars)"
+                                   PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}"
+                                   Margin="8,10"/>
+                        </VerticalStackLayout>
+
+                        <!-- Confirm Password -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Confirm Password" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Entry IsPassword="True"
+                                   Text="{Binding ConfirmPassword}"
+                                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                   Placeholder="Confirm new password"
+                                   PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}"
+                                   Margin="8,10"/>
+                        </VerticalStackLayout>
+
+                        <Button Text="Change Password"
+                                Command="{Binding ChangePasswordCommand}"
+                                IsEnabled="{Binding IsChangingPassword, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{StaticResource SecondaryColor}"
+                                TextColor="White"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                Padding="0,12"
+                                CornerRadius="8"
+                                Margin="0,4,0,0"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Addresses Section -->
+                <VerticalStackLayout Spacing="8">
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Label Text="Delivery Addresses" FontSize="14" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                               VerticalOptions="Center"/>
+                        <Button Text="+ Add"
+                                Command="{Binding AddAddressCommand}"
+                                BackgroundColor="{StaticResource PrimaryColor}"
+                                TextColor="White"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                Padding="12,6"
+                                CornerRadius="6"
+                                HeightRequest="36"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Addresses List -->
+                    <CollectionView ItemsSource="{Binding Addresses}">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="8"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                                       BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}"
+                                       StrokeShape="RoundRectangle 10"
+                                       Padding="12">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+
+                                        <!-- Address Info -->
+                                        <VerticalStackLayout Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Spacing="4">
+                                            <Label Text="{Binding Label, StringFormat='{0} (Default)'}"
+                                                   FontSize="13" FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                                   IsVisible="{Binding IsDefault}"/>
+                                            <Label Text="{Binding Label}"
+                                                   FontSize="13" FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                                   IsVisible="{Binding IsDefault, Converter={StaticResource InvertedBoolConverter}}"/>
+                                            <Label Text="{Binding AddressLine}" FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}"
+                                                   LineBreakMode="WordWrap"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Action Buttons -->
+                                        <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="4">
+                                            <Button Text="Edit"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditAddressCommand}"
+                                                    CommandParameter="r{.}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{StaticResource PrimaryColor}"
+                                                    FontSize="11"
+                                                    Padding="8,4"
+                                                    HeightRequest="32"/>
+                                            <Button Text="Delete"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteAddressCommand}"
+                                                    CommandParameter="r{.}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="#FF6B6B"
+                                                    FontSize="11"
+                                                    Padding="8,4"
+                                                    HeightRequest="32"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Set Default Button -->
+                                        <Button Grid.Column="1" Grid.Row="1"
+                                                Text="Set Default"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SetDefaultAddressCommand}"
+                                                CommandParameter="r{.}"
+                                                IsVisible="{Binding IsDefault, Converter={StaticResource InvertedBoolConverter}}"
+                                                BackgroundColor="{StaticResource SecondaryColor}"
+                                                TextColor="White"
+                                                FontSize="11"
+                                                FontAttributes="Bold"
+                                                Padding="8,4"
+                                                CornerRadius="4"
+                                                HeightRequest="32"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Logout Button -->
+                <Button Text="Logout"
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="#FF6B6B"
+                        TextColor="White"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        Padding="0,12"
+                        CornerRadius="8"
+                        Margin="0,16,0,0"/>
+
+                <!-- Bottom Spacing -->
+                <Label/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

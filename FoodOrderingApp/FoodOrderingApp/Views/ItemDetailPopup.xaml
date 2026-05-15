@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodOrderingApp.Views.ItemDetailPopup"
+             xmlns:models="clr-namespace:FoodOrderingApp.Models"
+             Title="Item Details"
+             BackgroundColor="Transparent"
+             Shell.PresentationMode="ModalAnimated">
+
+    <Grid RowDefinitions="*" Padding="0" RowSpacing="0">
+        
+        <!-- Transparent background to close on tap -->
+        <BoxView Grid.Row="0" Color="Black" Opacity="0.5" 
+                 HorizontalOptions="Fill" VerticalOptions="Fill">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseCommand}"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Popup Content Card -->
+        <Border Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center"
+               WidthRequest="{OnPlatform Default=320, WinUI=600, MacCatalyst=600}"
+               MaximumWidthRequest="500"
+               StrokeShape="RoundRectangle 16"
+               Padding="0"
+               Stroke="Transparent"
+               BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
+
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="5,5"/>
+            </Border.Shadow>
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="16" Padding="20">
+
+                    <!-- Close Button -->
+                    <HorizontalStackLayout HorizontalOptions="End">
+                        <Button Text="✕" 
+                                Command="{Binding CloseCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                FontSize="20"
+                                Padding="0"
+                                WidthRequest="40"
+                                HeightRequest="40"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Image -->
+                    <Image Source="{Binding Item.Image, StringFormat='https://via.placeholder.com/400x300?text={0}'}"
+                           Aspect="AspectFill"
+                           HeightRequest="250"
+                           Margin="-20,0,-20,0"/>
+
+                    <!-- Restaurant Name -->
+                    <Label Text="{Binding Item.RestaurantName}"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+
+                    <!-- Item Name -->
+                    <Label Text="{Binding Item.ItemName}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                           LineBreakMode="WordWrap"/>
+
+                    <!-- Vegetarian Badge -->
+                    <Label IsVisible="{Binding Item.IsVeg}"
+                           Text="🌱 Vegetarian"
+                           FontSize="11"
+                           TextColor="#16A34A"
+                           FontAttributes="Bold"/>
+
+                    <!-- Rating and Cuisine -->
+                    <HorizontalStackLayout Spacing="16">
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="⭐" FontSize="14" VerticalOptions="Center"/>
+                            <Label Text="{Binding Item.Rating, StringFormat='{0:F1}'}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        
+                        <Label Text="{Binding Item.Cuisine}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Description -->
+                    <Label Text="{Binding Item.Description}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           LineBreakMode="WordWrap"
+                           Margin="0,4,0,0"/>
+
+                    <!-- Price Display -->
+                    <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                           BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                           StrokeShape="RoundRectangle 8"
+                           Padding="12">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Price per item" FontSize="11"
+                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                            <Label Text="{Binding Item.Price, StringFormat='₹{0:F2}'}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Quantity Selector -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Quantity" FontSize="14" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                        
+                        <HorizontalStackLayout Spacing="8" HorizontalOptions="Start">
+                            <Button Text="−" 
+                                    Command="{Binding DecrementQuantityCommand}"
+                                    BackgroundColor="{StaticResource SecondaryColor}"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    Padding="8"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    CornerRadius="6"/>
+                            
+                            <Border Stroke="{StaticResource PrimaryColor}"
+                                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}"
+                                   StrokeShape="RoundRectangle 6"
+                                   Padding="0"
+                                   WidthRequest="50"
+                                   HeightRequest="40">
+                                <Label Text="{Binding Quantity}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <Button Text="+" 
+                                    Command="{Binding IncrementQuantityCommand}"
+                                    BackgroundColor="{StaticResource PrimaryColor}"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    Padding="8"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    CornerRadius="6"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Success Message -->
+                    <Border IsVisible="{Binding ShowSuccessMessage}"
+                           Stroke="#16A34A"
+                           BackgroundColor="#E8F5E9"
+                           StrokeShape="RoundRectangle 8"
+                           Padding="12">
+                        <Label Text="{Binding SuccessMessage}"
+                               TextColor="#16A34A"
+                               FontSize="13"
+                               FontAttributes="Bold"/>
+                    </Border>
+
+                    <!-- Add to Cart Button -->
+                    <Button Text="Add to Cart"
+                            Command="{Binding AddToCartCommand}"
+                            IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="{StaticResource PrimaryColor}"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Padding="0,12"
+                            CornerRadius="8"
+                            Margin="0,8,0,0"/>
+
+                    <!-- Loading Indicator -->
+                    <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                      IsVisible="{Binding IsLoading}"
+                                      Color="{StaticResource PrimaryColor}"
+                                      Margin="0,8"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </Grid>
+</ContentPage>

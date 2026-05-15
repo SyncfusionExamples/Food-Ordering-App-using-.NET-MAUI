@@ -1,0 +1,475 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using FoodOrderingApp.Models;
+using Microsoft.Maui.Storage;
+
+namespace FoodOrderingApp.Services;
+
+public class AuthService : IAuthService
+{
+    private readonly IDatabaseService _databaseService;
+    private readonly IValidationService _validationService;
+    private const string SessionKeyUserId = "session_userid";
+    private const string SessionKeyEmail = "session_email";
+
+    public AuthService(IDatabaseService databaseService, IValidationService validationService)
+    {
+        _databaseService = databaseService;
+        _validationService = validationService;
+    }
+
+    public async Task<AuthResult> LoginAsync(string email, string password)
+    {
+        // Validate inputs
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = "Email and password are required"
+            };
+        }
+
+        try
+        {
+            // Query user by email
+            var users = await _databaseService.QueryAsync<User>(
+                "SELECT * FROM Users WHERE Email = ?", email);
+
+            var user = users.FirstOrDefault();
+            if (user == null)
+            {
+                return new AuthResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = "Invalid email or password"
+                };
+            }
+
+            // Verify password hash using BCrypt
+            bool passwordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+            if (!passwordValid)
+            {
+                return new AuthResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = "Invalid email or password"
+                };
+            }
+
+            // Store session
+            await SecureStorage.SetAsync(SessionKeyUserId, user.UserId.ToString());
+            await SecureStorage.SetAsync(SessionKeyEmail, user.Email);
+
+            return new AuthResult
+            {
+                IsSuccessful = true,
+                User = user
+            };
+        }
+        catch (Exception ex)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = $"Login failed: {ex.Message}"
+            };
+        }
+    }
+
+    public async Task<AuthResult> SignUpAsync(string fullName, string email, string password)
+    {
+        // Validate full name
+        var (nameValid, nameError) = _validationService.ValidateRequired(fullName, "Full name");
+        if (!nameValid)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = nameError
+            };
+        }
+
+        // Validate email format
+        if (!_validationService.IsValidEmail(email))
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = "Please enter a valid email address"
+            };
+        }
+
+        // Validate password strength
+        var (passwordValid, passwordError) = _validationService.ValidatePassword(password);
+        if (!passwordValid)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = passwordError
+            };
+        }
+
+        try
+        {
+            // Check if email already exists
+            var existingUsers = await _databaseService.QueryAsync<User>(
+                "SELECT * FROM Users WHERE Email = ?", email);
+
+            if (existingUsers.Any())
+            {
+                return new AuthResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = "Email already registered"
+                };
+            }
+
+            // Hash password with BCrypt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+
+            // Create new user
+            var newUser = new User
+            {
+                FullName = fullName,
+                Email = email,
+                PasswordHash = passwordHash,
+                JoinDate = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Insert user into database
+            await _databaseService.InsertAsync(newUser);
+
+            return new AuthResult
+            {
+                IsSuccessful = true,
+                User = newUser
+            };
+        }
+        catch (Exception ex)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = $"Signup failed: {ex.Message}"
+            };
+        }
+    }
+
+    public async Task<AuthResult> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+    {
+        // Validate inputs
+        if (string.IsNullOrWhiteSpace(oldPassword))
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = "Current password is required"
+            };
+        }
+
+        if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = "New password must be at least 8 characters long"
+            };
+        }
+
+        try
+        {
+            // Get user
+            var user = await _databaseService.GetByIdAsync<User>(userId);
+            if (user == null)
+            {
+                return new AuthResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = "User not found"
+                };
+            }
+
+            // Verify old password
+            bool passwordValid = BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash);
+            if (!passwordValid)
+            {
+                return new AuthResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = "Current password is incorrect"
+                };
+            }
+
+            // Hash and update password
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _databaseService.UpdateAsync(user);
+
+            return new AuthResult
+            {
+                IsSuccessful = true,
+                User = user
+            };
+        }
+        catch (Exception ex)
+        {
+            return new AuthResult
+            {
+                IsSuccessful = false,
+                ErrorMessage = $"Password change failed: {ex.Message}"
+            };
+        }
+    }
+
+    public bool IsSessionValid()
+    {
+        try
+        {
+            var userIdStr = SecureStorage.GetAsync(SessionKeyUserId).Result;
+            var email = SecureStorage.GetAsync(SessionKeyEmail).Result;
+
+            return !string.IsNullOrEmpty(userIdStr) && !string.IsNullOrEmpty(email);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public void ClearSession()
+    {
+        try
+        {
+            SecureStorage.RemoveAll();
+        }
+        catch
+        {
+            // Ignore errors during logout
+        }
+    }
+
+    public async Task LogoutAsync()
+    {
+        ClearSession();
+        await Task.CompletedTask;
+    }
+
+    public async Task<bool> ValidatePasswordAsync(string email, string password)
+    {
+        try
+        {
+            var users = await _databaseService.QueryAsync<User>(
+                "SELECT * FROM Users WHERE Email = ?", email);
+
+            var user = users.FirstOrDefault();
+            if (user == null)
+                return false;
+
+            return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> ChangePasswordAsync(string email, string newPassword)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+                return false;
+
+            var users = await _databaseService.QueryAsync<User>(
+                "SELECT * FROM Users WHERE Email = ?", email);
+
+            var user = users.FirstOrDefault();
+            if (user == null)
+                return false;
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _databaseService.UpdateAsync(user);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public int? GetCurrentUserId()
+    {
+        try
+        {
+            var userIdStr = SecureStorage.GetAsync(SessionKeyUserId).Result;
+            if (int.TryParse(userIdStr, out var userId))
+            {
+                return userId;
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
+
+        return null;
+    }
+
+    public string? GetCurrentUserEmail()
+    {
+        try
+        {
+            return SecureStorage.GetAsync(SessionKeyEmail).Result;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<User?> GetCurrentUserAsync()
+    {
+        var userId = GetCurrentUserId();
+        if (userId == null)
+            return null;
+
+        return await _databaseService.GetByIdAsync<User>(userId.Value);
+    }
+
+    public async Task<bool> UpdateProfileAsync(int userId, string fullName, string email, DateTime dob)
+    {
+        try
+        {
+            var user = await _databaseService.GetByIdAsync<User>(userId);
+            if (user == null)
+                return false;
+
+            user.FullName = fullName;
+            user.Email = email;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _databaseService.UpdateAsync(user);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<List<Address>> GetUserAddressesAsync(int userId)
+    {
+        try
+        {
+            return await _databaseService.QueryAsync<Address>(
+                "SELECT * FROM Addresses WHERE UserId = ? ORDER BY IsDefault DESC, AddressId DESC", userId);
+        }
+        catch
+        {
+            return new List<Address>();
+        }
+    }
+
+    public async Task<Address?> GetAddressAsync(int addressId)
+    {
+        try
+        {
+            return await _databaseService.GetByIdAsync<Address>(addressId);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> AddAddressAsync(Address address)
+    {
+        try
+        {
+            address.CreatedAt = DateTime.UtcNow;
+            address.UpdatedAt = DateTime.UtcNow;
+
+            await _databaseService.InsertAsync(address);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateAddressAsync(Address address)
+    {
+        try
+        {
+            address.UpdatedAt = DateTime.UtcNow;
+            await _databaseService.UpdateAsync(address);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteAddressAsync(int addressId)
+    {
+        try
+        {
+            await _databaseService.DeleteAsync<Address>(addressId);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> SetDefaultAddressAsync(int userId, int addressId)
+    {
+        try
+        {
+            var addresses = await _databaseService.QueryAsync<Address>(
+                "SELECT * FROM Addresses WHERE UserId = ?", userId);
+
+            await _databaseService.ExecuteTransactionAsync(async () =>
+            {
+                foreach (var addr in addresses)
+                {
+                    addr.IsDefault = (addr.AddressId == addressId);
+                    addr.UpdatedAt = DateTime.UtcNow;
+                    await _databaseService.UpdateAsync(addr);
+                }
+            });
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}

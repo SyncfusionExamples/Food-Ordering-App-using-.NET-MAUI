@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FoodOrderingApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FoodOrderingApp.Views"
+    FlyoutBehavior="Disabled"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+    <!-- Authentication Routes (Outside Shell) -->
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="login"
+        x:Name="LoginRoute" />
+
+    <ShellContent
+        Title="Sign Up"
+        ContentTemplate="{DataTemplate local:SignUpPage}"
+        Route="signup"
+        x:Name="SignUpRoute" />
+
+    <!-- Main Shell Content with Tabs -->
+    <TabBar
+        x:Name="MainTabBar"
+        IsVisible="False">
+
+        <!-- Home Tab -->
+        <ShellContent
+            Title="Home"
+            Icon="home.png"
+            ContentTemplate="{DataTemplate local:HomePage}"
+            Route="home"
+            x:Name="HomeTab" />
+
+        <!-- Cart Tab -->
+        <ShellContent
+            Title="Cart"
+            Icon="cart.png"
+            ContentTemplate="{DataTemplate local:CartPage}"
+            Route="cart"
+            x:Name="CartTab" />
+
+        <!-- Orders Tab -->
+        <ShellContent
+            Title="Orders"
+            Icon="orders.png"
+            ContentTemplate="{DataTemplate local:OrdersPage}"
+            Route="orders"
+            x:Name="OrdersTab" />
+
+        <!-- Profile Tab -->
+        <ShellContent
+            Title="Profile"
+            Icon="profile.png"
+            ContentTemplate="{DataTemplate local:ProfilePage}"
+            Route="profile"
+            x:Name="ProfileTab" />
+
+    </TabBar>
+
+    <!-- Modal Routes for Detail Pages -->
+    <ShellContent
+        Title="Item Detail"
+        ContentTemplate="{DataTemplate local:ItemDetailPopup}"
+        Route="itemdetail"
+        x:Name="ItemDetailRoute" />
+
+    <ShellContent
+        Title="Checkout"
+        ContentTemplate="{DataTemplate local:CheckoutPopup}"
+        Route="checkout"
+        x:Name="CheckoutRoute" />
+
+    <ShellContent
+        Title="Order Detail"
+        ContentTemplate="{DataTemplate local:OrderDetailPage}"
+        Route="orderdetail"
+        x:Name="OrderDetailRoute" />
+
+    <ShellContent
+        Title="Address Form"
+        ContentTemplate="{DataTemplate local:AddressFormPopup}"
+        Route="addressform"
+        x:Name="AddressFormRoute" />
+
+</Shell>
