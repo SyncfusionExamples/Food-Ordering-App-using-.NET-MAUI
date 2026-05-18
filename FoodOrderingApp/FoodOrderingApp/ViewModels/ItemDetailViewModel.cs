@@ -1,8 +1,6 @@
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using FoodOrderingApp.Models;
 using FoodOrderingApp.Services;
@@ -142,7 +140,7 @@ public class ItemDetailViewModel : INotifyPropertyChanged
                 ShowSuccessMessage = true;
 
                 // Hide success message after 2 seconds and close popup
-                await Task.Delay(2000);
+                await Task.Delay(500);
                 Close();
             }
         }

@@ -1,6 +1,5 @@
 using FoodOrderingApp.Services;
 using FoodOrderingApp.ViewModels;
-using Microsoft.Maui.Controls;
 
 namespace FoodOrderingApp.Views;
 
@@ -20,7 +19,7 @@ public partial class CheckoutPopup : ContentPage
         if (e.Value)
         {
             _viewModel.SelectedPaymentMethod = PaymentMethod.UPI;
-            // Uncheck other checkboxes
+
             if (NetBankingFrame.Content is HorizontalStackLayout netBankingLayout &&
                 netBankingLayout.Children[0] is CheckBox netBankingCheckbox)
             {
@@ -44,7 +43,7 @@ public partial class CheckoutPopup : ContentPage
         if (e.Value)
         {
             _viewModel.SelectedPaymentMethod = PaymentMethod.NetBanking;
-            // Uncheck other checkboxes
+
             if (UPIFrame.Content is HorizontalStackLayout upiLayout &&
                 upiLayout.Children[0] is CheckBox upiCheckbox)
             {
@@ -68,7 +67,7 @@ public partial class CheckoutPopup : ContentPage
         if (e.Value)
         {
             _viewModel.SelectedPaymentMethod = PaymentMethod.CreditCard;
-            // Uncheck other checkboxes
+
             if (UPIFrame.Content is HorizontalStackLayout upiLayout &&
                 upiLayout.Children[0] is CheckBox upiCheckbox)
             {
@@ -92,7 +91,7 @@ public partial class CheckoutPopup : ContentPage
         if (e.Value)
         {
             _viewModel.SelectedPaymentMethod = PaymentMethod.DebitCard;
-            // Uncheck other checkboxes
+
             if (UPIFrame.Content is HorizontalStackLayout upiLayout &&
                 upiLayout.Children[0] is CheckBox upiCheckbox)
             {

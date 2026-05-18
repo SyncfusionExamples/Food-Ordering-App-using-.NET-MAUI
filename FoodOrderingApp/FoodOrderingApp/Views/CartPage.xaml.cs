@@ -1,5 +1,4 @@
 using FoodOrderingApp.ViewModels;
-using Microsoft.Maui.Controls;
 
 namespace FoodOrderingApp.Views;
 

@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using FoodOrderingApp.Models;
-using Microsoft.Maui.Storage;
 
 namespace FoodOrderingApp.Services;
 
@@ -15,7 +10,6 @@ public class AuthService : IAuthService
     private const string SessionKeyUserId = "session_userid";
     private const string SessionKeyEmail = "session_email";
     
-    // Cache session data to avoid blocking SecureStorage calls
     private string? _cachedUserIdStr;
     private string? _cachedEmail;
     private bool _sessionCacheLoaded = false;
@@ -26,7 +20,6 @@ public class AuthService : IAuthService
         _validationService = validationService;
     }
     
-    // Load session cache once during initialization
     private async Task EnsureSessionCacheLoadedAsync()
     {
         if (!_sessionCacheLoaded)
@@ -49,7 +42,6 @@ public class AuthService : IAuthService
 
     public async Task<AuthResult> LoginAsync(string email, string password)
     {
-        // Validate inputs
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             return new AuthResult
@@ -61,7 +53,6 @@ public class AuthService : IAuthService
 
         try
         {
-            // Query user by email (case-insensitive)
             var users = await _databaseService.QueryAsync<User>(
                 "SELECT * FROM Users WHERE LOWER(Email) = LOWER(?)", email?.ToLower() ?? string.Empty);
 
@@ -75,7 +66,6 @@ public class AuthService : IAuthService
                 };
             }
 
-            // Verify password hash using BCrypt
             bool passwordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
             if (!passwordValid)
             {
@@ -86,9 +76,13 @@ public class AuthService : IAuthService
                 };
             }
 
-            // Store session
             await SecureStorage.SetAsync(SessionKeyUserId, user.UserId.ToString());
             await SecureStorage.SetAsync(SessionKeyEmail, user.Email);
+
+            _cachedUserIdStr = user.UserId.ToString();
+            _cachedEmail = user.Email;
+            _sessionCacheLoaded = true;
+
 
             return new AuthResult
             {
@@ -108,7 +102,6 @@ public class AuthService : IAuthService
 
     public async Task<AuthResult> SignUpAsync(string fullName, string email, string password)
     {
-        // Validate full name
         var (nameValid, nameError) = _validationService.ValidateRequired(fullName, "Full name");
         if (!nameValid)
         {
@@ -119,7 +112,6 @@ public class AuthService : IAuthService
             };
         }
 
-        // Validate email format
         if (!_validationService.IsValidEmail(email))
         {
             return new AuthResult
@@ -129,7 +121,6 @@ public class AuthService : IAuthService
             };
         }
 
-        // Validate password strength
         var (passwordValid, passwordError) = _validationService.ValidatePassword(password);
         if (!passwordValid)
         {
@@ -142,7 +133,6 @@ public class AuthService : IAuthService
 
         try
         {
-            // Check if email already exists (case-insensitive)
             var existingUsers = await _databaseService.QueryAsync<User>(
                 "SELECT * FROM Users WHERE LOWER(Email) = LOWER(?)", email?.ToLower() ?? string.Empty);
 
@@ -161,10 +151,8 @@ public class AuthService : IAuthService
                 };
             }
 
-            // Hash password with BCrypt
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // Create new user
             var newUser = new User
             {
                 FullName = fullName,
@@ -175,7 +163,6 @@ public class AuthService : IAuthService
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Insert user into database
             await _databaseService.InsertAsync(newUser);
 
             return new AuthResult
@@ -196,7 +183,6 @@ public class AuthService : IAuthService
 
     public async Task<AuthResult> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
     {
-        // Validate inputs
         if (string.IsNullOrWhiteSpace(oldPassword))
         {
             return new AuthResult
@@ -217,7 +203,6 @@ public class AuthService : IAuthService
 
         try
         {
-            // Get user
             var user = await _databaseService.GetByIdAsync<User>(userId);
             if (user == null)
             {
@@ -228,7 +213,6 @@ public class AuthService : IAuthService
                 };
             }
 
-            // Verify old password
             bool passwordValid = BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash);
             if (!passwordValid)
             {
@@ -239,7 +223,6 @@ public class AuthService : IAuthService
                 };
             }
 
-            // Hash and update password
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             user.UpdatedAt = DateTime.UtcNow;
 
@@ -263,7 +246,6 @@ public class AuthService : IAuthService
 
     public bool IsSessionValid()
     {
-        // Use cached values - don't block UI thread
         return !string.IsNullOrEmpty(_cachedUserIdStr) && !string.IsNullOrEmpty(_cachedEmail);
     }
 
@@ -293,7 +275,6 @@ public class AuthService : IAuthService
             // Ignore errors during logout
         }
         
-        // Clear cache
         _cachedUserIdStr = null;
         _cachedEmail = null;
         _sessionCacheLoaded = false;
@@ -343,7 +324,6 @@ public class AuthService : IAuthService
 
             await _databaseService.UpdateAsync(user);
             
-            // Force cache reload on next access
             _sessionCacheLoaded = false;
             
             return true;
@@ -356,7 +336,6 @@ public class AuthService : IAuthService
 
     public int? GetCurrentUserId()
     {
-        // Use cached value - doesn't block UI
         if (int.TryParse(_cachedUserIdStr, out var userId))
         {
             return userId;
@@ -366,7 +345,6 @@ public class AuthService : IAuthService
 
     public string? GetCurrentUserEmail()
     {
-        // Use cached value - doesn't block UI
         return _cachedEmail;
     }
     
@@ -405,7 +383,6 @@ public class AuthService : IAuthService
 
             await _databaseService.UpdateAsync(user);
             
-            // Update cached email if it matches
             if (GetCurrentUserId() == userId)
             {
                 _cachedEmail = email;

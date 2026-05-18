@@ -1,15 +1,16 @@
+using CommunityToolkit.Mvvm.Input;
+using FoodOrderingApp.Models;
+using FoodOrderingApp.Services;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using FoodOrderingApp.Models;
-using FoodOrderingApp.Services;
-using Microsoft.Maui.Controls;
 
 namespace FoodOrderingApp.ViewModels;
 
@@ -128,7 +129,6 @@ public class CartViewModel : INotifyPropertyChanged
             CartItems = new ObservableCollection<CartItemViewModel>(cartItemViewModels);
             IsCartEmpty = CartItems.Count == 0;
 
-            // Calculate subtotal
             Subtotal = await _cartService.CalculateTotalAsync();
         }
         catch (Exception ex)
@@ -175,7 +175,15 @@ public class CartViewModel : INotifyPropertyChanged
 
         try
         {
-            await Shell.Current.GoToAsync("checkout");
+            var subtotal = await _cartService.CalculateTotalAsync();
+            var tax = subtotal * 0.18m;
+            var deliveryFee = 50m;
+            var total = subtotal + tax + deliveryFee;
+            await Shell.Current.GoToAsync("checkout", new Dictionary<string, object>
+            {
+                { "total", total.ToString("F2", CultureInfo.InvariantCulture) }
+            });
+
         }
         catch (Exception ex)
         {

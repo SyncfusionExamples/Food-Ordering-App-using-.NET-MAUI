@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using FoodOrderingApp.Models;
 
 namespace FoodOrderingApp.Services;
@@ -22,17 +18,16 @@ public class CartService : ICartService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
+
             if (userId == null)
                 return false;
 
-            // Check if item already in cart
             var existingItems = await _databaseService.QueryAsync<CartItem>(
                 "SELECT * FROM CartItems WHERE UserId = ? AND ItemId = ?", userId, itemId);
 
             if (existingItems.Any())
             {
-                // Update quantity
                 var cartItem = existingItems.First();
                 cartItem.Quantity += quantity;
                 cartItem.UpdatedAt = DateTime.UtcNow;
@@ -40,7 +35,6 @@ public class CartService : ICartService
             }
             else
             {
-                // Insert new cart item
                 var cartItem = new CartItem
                 {
                     UserId = userId.Value,
@@ -155,7 +149,6 @@ public class CartService : ICartService
             if (userId == null)
                 return 0;
 
-            // Get all cart items with their prices from Items table
             var cartItems = await GetCartItemsAsync();
             decimal total = 0;
 
