@@ -3,117 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:FoodOrderingApp.Models"
              x:Class="FoodOrderingApp.Views.LoginPage"
-             Title="Login"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
     <Grid RowDefinitions="*" ColumnDefinitions="*,*" Padding="0" ColumnSpacing="0">
-        <!-- Left Column: Image/Branding (Hidden on mobile, visible on larger screens) -->
-        <BoxView Grid.Row="0" Grid.Column="0" 
-                 BackgroundColor="{StaticResource PrimaryColor}"
-                 IsVisible="{OnPlatform Default=false, WinUI=true, MacCatalyst=true}"/>
-        
-        <VerticalStackLayout Grid.Row="0" Grid.Column="0"
-                            IsVisible="{OnPlatform Default=false, WinUI=true, MacCatalyst=true}"
-                            Padding="30"
-                            Spacing="20"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center">
+        <BoxView Grid.Row="0" Grid.Column="0" BackgroundColor="{StaticResource PrimaryColor}" IsVisible="{OnPlatform Default=false, WinUI=true, MacCatalyst=true}"/>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0" IsVisible="{OnPlatform Default=false, WinUI=true, MacCatalyst=true}" Padding="30" Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
             <Label Text="🍔" FontSize="64" HorizontalOptions="Center"/>
-            <Label Text="CraveDash" FontSize="32" FontAttributes="Bold" 
-                   TextColor="White" HorizontalOptions="Center"/>
-            <Label Text="Premium food at your fingertips" FontSize="18" 
-                   TextColor="White" HorizontalOptions="Center" Opacity="0.8"/>
+            <Label Text="CraveDash" FontSize="32" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+            <Label Text="Premium food at your fingertips" FontSize="18" TextColor="White" HorizontalOptions="Center" Opacity="0.8"/>
         </VerticalStackLayout>
-
-        <!-- Right Column / Full Column on Mobile: Login Form -->
-        <ScrollView Grid.Row="0" 
-                    Grid.Column="{OnPlatform Default=0, WinUI=1, MacCatalyst=1}">
+        <ScrollView Grid.Row="0" Grid.Column="{OnPlatform Default=0, WinUI=1, MacCatalyst=1}">
             <VerticalStackLayout Padding="20" Spacing="24" VerticalOptions="Center">
-                
-                <!-- Header -->
                 <VerticalStackLayout Spacing="8" Margin="0,0,0,20">
-                    <Label Text="Welcome Back" FontSize="28" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                    <Label Text="Sign in to order your favorite meals" FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}"
-                           LineBreakMode="WordWrap"/>
+                    <Label Text="Welcome Back" FontSize="28" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                    <Label Text="Sign in to order your favorite meals" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}" LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>
-
-                <!-- Error Message -->
-                <Border IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
-                       Stroke="#FF6B6B" BackgroundColor="#FFE0E0" StrokeShape="RoundRectangle 8" Padding="12">
-                    <Label Text="{Binding ErrorMessage}" 
-                           TextColor="#CC0000" FontSize="12"/>
+                <Border IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" Stroke="#FF6B6B" BackgroundColor="#FFE0E0" StrokeShape="RoundRectangle 8" Padding="12">
+                    <Label Text="{Binding ErrorMessage}" TextColor="#CC0000" FontSize="12"/>
                 </Border>
-
-                <!-- Email Field -->
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Email Address" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                    <Entry x:Name="EmailEntry"
-                           Placeholder="Enter your email"
-                           Text="{Binding Email}"
-                           Keyboard="Email"
-                           IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
-                           Style="{StaticResource EntryStyle}"/>
+                    <Label Text="Email Address" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                    <Entry x:Name="EmailEntry" Placeholder="Enter your email" Text="{Binding Email}" Keyboard="Email" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}"/>
                 </VerticalStackLayout>
-
-                <!-- Password Field -->
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Password" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                    
+                    <Label Text="Password" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                     <Grid ColumnDefinitions="*,50" ColumnSpacing="8">
-                        <Entry Grid.Column="0"
-                               Placeholder="Enter your password"
-                               Text="{Binding Password}"
-                               IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertedBoolConverter}}"
-                               Keyboard="Default"
-                               IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
-                               Style="{StaticResource EntryStyle}"/>
-                        
-                        <Button Grid.Column="1"
-                                Text="👁️"
-                                Command="{Binding TogglePasswordVisibilityCommand}"
-                                BackgroundColor="Transparent"
-                                TextColor="{StaticResource SecondaryColor}"
-                                FontSize="16"
-                                Padding="0"/>
+                        <Entry Grid.Column="0" Placeholder="Enter your password" Text="{Binding Password}" IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertedBoolConverter}}" Keyboard="Default" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}"/>
+                        <Button Grid.Column="1" Text="👁️" Command="{Binding TogglePasswordVisibilityCommand}" BackgroundColor="Transparent" TextColor="{StaticResource SecondaryColor}" FontSize="16" Padding="0"/>
                     </Grid>
                 </VerticalStackLayout>
-
-                <!-- Forgot Password Link -->
-                <Label Text="Forgot password?" FontSize="12" HorizontalOptions="End"
-                       TextColor="{StaticResource SecondaryColor}">
+                <Label Text="Forgot password?" FontSize="12" HorizontalOptions="End" TextColor="{StaticResource SecondaryColor}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer/>
                     </Label.GestureRecognizers>
                 </Label>
-
-                <!-- Login Button -->
-                <Button Text="Sign In"
-                        Command="{Binding LoginCommand}"
-                        IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
-                        BackgroundColor="{StaticResource PrimaryColor}"
-                        TextColor="White"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Padding="0,12"
-                        CornerRadius="8"
-                        Margin="0,10,0,0"/>
-
-                <!-- Loading Indicator -->
-                <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                  IsVisible="{Binding IsLoading}"
-                                  Color="{StaticResource PrimaryColor}"
-                                  Margin="0,10"/>
-
-                <!-- Sign Up Link -->
+                <Button Text="Sign In" Command="{Binding LoginCommand}" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{StaticResource PrimaryColor}" TextColor="White" FontSize="16" FontAttributes="Bold" Padding="0,12" CornerRadius="8" Margin="0,10,0,0"/>
+                <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource PrimaryColor}" Margin="0,10"/>
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="0">
-                    <Label Text="Don't have an account? " FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}"/>
-                    <Label Text="Sign Up" FontSize="14" FontAttributes="Bold"
-                           TextColor="{StaticResource SecondaryColor}">
+                    <Label Text="Don't have an account? " FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}"/>
+                    <Label Text="Sign Up" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource SecondaryColor}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding NavigateToSignUpCommand}"/>
                         </Label.GestureRecognizers>

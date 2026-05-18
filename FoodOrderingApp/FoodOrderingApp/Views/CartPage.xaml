@@ -4,7 +4,7 @@
              xmlns:models="clr-namespace:FoodOrderingApp.Models"
              xmlns:local="clr-namespace:FoodOrderingApp.ViewModels"
              x:Class="FoodOrderingApp.Views.CartPage"
-             Title="Shopping Cart"
+             Title="CraveDash"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
 
     <Grid RowDefinitions="*,Auto">

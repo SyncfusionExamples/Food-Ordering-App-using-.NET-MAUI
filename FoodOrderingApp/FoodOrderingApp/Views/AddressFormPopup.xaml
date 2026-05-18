@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FoodOrderingApp.Views.AddressFormPopup"
              xmlns:models="clr-namespace:FoodOrderingApp.Models"
-             Title="Add Address"
+             Title="CraveDash"
              BackgroundColor="Transparent">
 
     <!-- Outer Container for Semi-transparent Background -->
