@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using FoodOrderingApp.Models;
 using FoodOrderingApp.Services;
-using Microsoft.Maui.Storage;
 using SQLite;
 
 namespace FoodOrderingApp.Database;
@@ -27,10 +22,8 @@ public class DatabaseService : IDatabaseService
 
         _database = new SQLiteAsyncConnection(_databasePath);
 
-        // Enable foreign keys
         await _database.ExecuteAsync("PRAGMA foreign_keys = ON");
 
-        // Create tables
         await _database.CreateTableAsync<User>();
         await _database.CreateTableAsync<Item>();
         await _database.CreateTableAsync<CartItem>();
@@ -38,10 +31,8 @@ public class DatabaseService : IDatabaseService
         await _database.CreateTableAsync<OrderItem>();
         await _database.CreateTableAsync<Address>();
 
-        // Create indexes
         await CreateIndexesAsync();
 
-        // Seed initial data if empty
         var itemCount = await _database.Table<Item>().CountAsync();
         if (itemCount == 0)
         {
@@ -53,7 +44,6 @@ public class DatabaseService : IDatabaseService
     {
         if (_database == null) return;
 
-        // Create indexes for frequently queried columns
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_users_email ON Users(Email)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_items_veg ON Items(IsVeg)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_items_cuisine ON Items(Cuisine)");
@@ -149,8 +139,6 @@ public class DatabaseService : IDatabaseService
 
         try
         {
-            // Use a synchronous wrapper for the async action
-            // This properly handles the transaction
             await _database.RunInTransactionAsync(async (conn) =>
             {
                 await action();
@@ -175,6 +163,4 @@ public class DatabaseService : IDatabaseService
         if (_database == null) return new List<User>();
         return await _database.Table<User>().ToListAsync();
     }
-
-
 }
