@@ -482,7 +482,7 @@ public class ProfileViewModel : INotifyPropertyChanged
     private async Task AddAddressAsync()
     {
         // Navigate to add address modal
-        await Shell.Current.GoToAsync("addressform");
+        await Shell.Current.GoToAsync("//addressform");
     }
 
     private async Task EditAddressAsync(AddressItem? address)
@@ -490,7 +490,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         if (address == null) return;
 
         // Navigate to edit address modal with address ID
-        await Shell.Current.GoToAsync($"addressform?id={address.AddressId}");
+        await Shell.Current.GoToAsync($"//addressform?id={address.AddressId}");
     }
 
     [Obsolete]
@@ -681,7 +681,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         CurrentAddress = null;
         _editingAddressId = null;
         ErrorMessage = string.Empty;
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("//profile");
     }
 
     private bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")

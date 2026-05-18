@@ -3,7 +3,7 @@ using SQLite;
 
 namespace FoodOrderingApp.Models;
 
-[Table("Cart")]
+[Table("CartItems")]
 public class CartItem
 {
     [PrimaryKey, AutoIncrement]

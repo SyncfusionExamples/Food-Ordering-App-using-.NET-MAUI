@@ -7,14 +7,10 @@ public partial class HomePage : ContentPage
 {
     private readonly HomeViewModel _viewModel;
 
-    public HomePage()
-    {
-    }
-
     public HomePage(HomeViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = viewModel;
+        _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
         BindingContext = _viewModel;
     }
 

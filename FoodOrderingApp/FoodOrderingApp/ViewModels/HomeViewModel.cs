@@ -167,14 +167,17 @@ public class HomeViewModel : INotifyPropertyChanged
     }
 
     [Obsolete]
-    private void Logout()
+    private async void Logout()
     {
         _authService.ClearSession();
 
-        if (App.Current?.MainPage is AppShell shell)
+        try
         {
-            shell.ShowAuthPages();
-            Shell.Current.GoToAsync("//");
+            await Shell.Current.GoToAsync("//login", animate: false);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error logging out: {ex.Message}");
         }
     }
 

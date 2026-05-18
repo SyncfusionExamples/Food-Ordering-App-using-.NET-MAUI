@@ -33,6 +33,8 @@ public interface IAuthService
 
     bool IsSessionValid();
 
+    Task<bool> IsSessionValidAsync();
+
     void ClearSession();
 
     Task LogoutAsync();
@@ -40,6 +42,10 @@ public interface IAuthService
     int? GetCurrentUserId();
 
     string? GetCurrentUserEmail();
+    
+    Task<int?> GetCurrentUserIdAsync();
+
+    Task<string?> GetCurrentUserEmailAsync();
 
     Task<User?> GetCurrentUserAsync();
 }

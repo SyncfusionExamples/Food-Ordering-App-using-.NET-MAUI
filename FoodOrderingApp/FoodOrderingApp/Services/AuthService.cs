@@ -14,11 +14,37 @@ public class AuthService : IAuthService
     private readonly IValidationService _validationService;
     private const string SessionKeyUserId = "session_userid";
     private const string SessionKeyEmail = "session_email";
+    
+    // Cache session data to avoid blocking SecureStorage calls
+    private string? _cachedUserIdStr;
+    private string? _cachedEmail;
+    private bool _sessionCacheLoaded = false;
 
     public AuthService(IDatabaseService databaseService, IValidationService validationService)
     {
         _databaseService = databaseService;
         _validationService = validationService;
+    }
+    
+    // Load session cache once during initialization
+    private async Task EnsureSessionCacheLoadedAsync()
+    {
+        if (!_sessionCacheLoaded)
+        {
+            try
+            {
+                _cachedUserIdStr = await SecureStorage.GetAsync(SessionKeyUserId);
+                _cachedEmail = await SecureStorage.GetAsync(SessionKeyEmail);
+            }
+            catch
+            {
+                // Ignore errors, cache will be empty
+            }
+            finally
+            {
+                _sessionCacheLoaded = true;
+            }
+        }
     }
 
     public async Task<AuthResult> LoginAsync(string email, string password)
@@ -35,9 +61,9 @@ public class AuthService : IAuthService
 
         try
         {
-            // Query user by email
+            // Query user by email (case-insensitive)
             var users = await _databaseService.QueryAsync<User>(
-                "SELECT * FROM Users WHERE Email = ?", email);
+                "SELECT * FROM Users WHERE LOWER(Email) = LOWER(?)", email?.ToLower() ?? string.Empty);
 
             var user = users.FirstOrDefault();
             if (user == null)
@@ -116,9 +142,15 @@ public class AuthService : IAuthService
 
         try
         {
-            // Check if email already exists
+            // Check if email already exists (case-insensitive)
             var existingUsers = await _databaseService.QueryAsync<User>(
-                "SELECT * FROM Users WHERE Email = ?", email);
+                "SELECT * FROM Users WHERE LOWER(Email) = LOWER(?)", email?.ToLower() ?? string.Empty);
+
+            System.Diagnostics.Debug.WriteLine($"[AuthService.SignUp] Email query for '{email}' returned {existingUsers.Count} users");
+            foreach (var user in existingUsers)
+            {
+                System.Diagnostics.Debug.WriteLine($"  - Found user: {user.Email}");
+            }
 
             if (existingUsers.Any())
             {
@@ -231,10 +263,16 @@ public class AuthService : IAuthService
 
     public bool IsSessionValid()
     {
+        // Use cached values - don't block UI thread
+        return !string.IsNullOrEmpty(_cachedUserIdStr) && !string.IsNullOrEmpty(_cachedEmail);
+    }
+
+    public async Task<bool> IsSessionValidAsync()
+    {
         try
         {
-            var userIdStr = SecureStorage.GetAsync(SessionKeyUserId).Result;
-            var email = SecureStorage.GetAsync(SessionKeyEmail).Result;
+            var userIdStr = await SecureStorage.GetAsync(SessionKeyUserId);
+            var email = await SecureStorage.GetAsync(SessionKeyEmail);
 
             return !string.IsNullOrEmpty(userIdStr) && !string.IsNullOrEmpty(email);
         }
@@ -254,6 +292,11 @@ public class AuthService : IAuthService
         {
             // Ignore errors during logout
         }
+        
+        // Clear cache
+        _cachedUserIdStr = null;
+        _cachedEmail = null;
+        _sessionCacheLoaded = false;
     }
 
     public async Task LogoutAsync()
@@ -299,6 +342,10 @@ public class AuthService : IAuthService
             user.UpdatedAt = DateTime.UtcNow;
 
             await _databaseService.UpdateAsync(user);
+            
+            // Force cache reload on next access
+            _sessionCacheLoaded = false;
+            
             return true;
         }
         catch
@@ -309,32 +356,30 @@ public class AuthService : IAuthService
 
     public int? GetCurrentUserId()
     {
-        try
+        // Use cached value - doesn't block UI
+        if (int.TryParse(_cachedUserIdStr, out var userId))
         {
-            var userIdStr = SecureStorage.GetAsync(SessionKeyUserId).Result;
-            if (int.TryParse(userIdStr, out var userId))
-            {
-                return userId;
-            }
+            return userId;
         }
-        catch
-        {
-            // Ignore errors
-        }
-
         return null;
     }
 
     public string? GetCurrentUserEmail()
     {
-        try
-        {
-            return SecureStorage.GetAsync(SessionKeyEmail).Result;
-        }
-        catch
-        {
-            return null;
-        }
+        // Use cached value - doesn't block UI
+        return _cachedEmail;
+    }
+    
+    public async Task<int?> GetCurrentUserIdAsync()
+    {
+        await EnsureSessionCacheLoadedAsync();
+        return GetCurrentUserId();
+    }
+
+    public async Task<string?> GetCurrentUserEmailAsync()
+    {
+        await EnsureSessionCacheLoadedAsync();
+        return GetCurrentUserEmail();
     }
 
     public async Task<User?> GetCurrentUserAsync()
@@ -359,6 +404,13 @@ public class AuthService : IAuthService
             user.UpdatedAt = DateTime.UtcNow;
 
             await _databaseService.UpdateAsync(user);
+            
+            // Update cached email if it matches
+            if (GetCurrentUserId() == userId)
+            {
+                _cachedEmail = email;
+            }
+            
             return true;
         }
         catch

@@ -118,8 +118,8 @@ public partial class SignUpViewModel : INotifyPropertyChanged
 
             if (result.IsSuccessful)
             {
-                // Navigate back to login
-                await Shell.Current.GoToAsync("//");
+                // Navigate back to login page
+                await Shell.Current.GoToAsync("//login");
             }
             else
             {
@@ -138,7 +138,7 @@ public partial class SignUpViewModel : INotifyPropertyChanged
 
     private void NavigateToLogin()
     {
-        Shell.Current?.GoToAsync("../");
+        Shell.Current?.GoToAsync("//login");
     }
 
     private void TogglePasswordVisibility()

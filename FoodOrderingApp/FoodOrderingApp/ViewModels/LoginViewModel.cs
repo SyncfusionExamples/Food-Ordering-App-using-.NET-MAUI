@@ -59,7 +59,7 @@ public class LoginViewModel : INotifyPropertyChanged
         _authService = authService;
 
         LoginCommand = new AsyncRelayCommand(LoginAsync);
-        NavigateToSignUpCommand = new RelayCommand(NavigateToSignUp);
+        NavigateToSignUpCommand = new AsyncRelayCommand(NavigateToSignUpAsync);
         TogglePasswordVisibilityCommand = new RelayCommand(TogglePasswordVisibility);
     }
 
@@ -84,11 +84,7 @@ public class LoginViewModel : INotifyPropertyChanged
             {
                 // Navigate to Home page
                 await Shell.Current.GoToAsync("//home");
-                // Show main tabs
-                if (App.Current?.MainPage is AppShell shell)
-                {
-                    shell.ShowMainTabs();
-                }
+                System.Diagnostics.Debug.WriteLine("LoginViewModel: Navigation to home complete");
             }
             else
             {
@@ -105,9 +101,16 @@ public class LoginViewModel : INotifyPropertyChanged
         }
     }
 
-    private void NavigateToSignUp()
+    private async Task NavigateToSignUpAsync()
     {
-        Shell.Current?.GoToAsync("signup");
+        try
+        {
+            await Shell.Current.GoToAsync("//signup");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Navigation error: {ex.Message}";
+        }
     }
 
     private void TogglePasswordVisibility()
@@ -158,21 +161,47 @@ public class AsyncRelayCommand : ICommand
         _execute = execute;
     }
 
-    public bool CanExecute(object? parameter) => !_isExecuting;
-
-    public async void Execute(object? parameter)
+    public bool CanExecute(object? parameter)
     {
-        _isExecuting = true;
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        System.Diagnostics.Debug.WriteLine($"AsyncRelayCommand.CanExecute called - IsExecuting: {_isExecuting}");
+        return !_isExecuting;
+    }
 
-        try
+    public void Execute(object? parameter)
+    {
+        System.Diagnostics.Debug.WriteLine("AsyncRelayCommand.Execute called");
+        
+        // Fire and forget with proper exception handling
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await _execute();
-        }
-        finally
-        {
-            _isExecuting = false;
+            if (_isExecuting)
+            {
+                System.Diagnostics.Debug.WriteLine("AsyncRelayCommand: Already executing, ignoring");
+                return;
+            }
+
+            _isExecuting = true;
+            System.Diagnostics.Debug.WriteLine("AsyncRelayCommand: Setting IsExecuting = true");
+            
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("AsyncRelayCommand: Starting async operation");
+                await _execute();
+                System.Diagnostics.Debug.WriteLine("AsyncRelayCommand: Async operation completed");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AsyncRelayCommand: Exception - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"AsyncRelayCommand: StackTrace - {ex.StackTrace}");
+            }
+            finally
+            {
+                _isExecuting = false;
+                System.Diagnostics.Debug.WriteLine("AsyncRelayCommand: Setting IsExecuting = false");
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            }
+        });
     }
 }

@@ -28,4 +28,8 @@ public interface IDatabaseService
     Task DeleteAsync<T>(int id) where T : class, new();
 
     Task<bool> ExecuteTransactionAsync(Func<Task> action);
+
+    Task<int> ClearUsersAsync();
+
+    Task<List<User>> GetAllUsersAsync();
 }

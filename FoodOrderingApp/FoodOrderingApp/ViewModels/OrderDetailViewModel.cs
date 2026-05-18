@@ -320,7 +320,7 @@ public class OrderDetailViewModel : INotifyPropertyChanged
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 await Application.Current?.MainPage?.DisplayAlert("Success", "Order cancelled successfully", "OK");
-                await Shell.Current.GoToAsync("..");
+                await Shell.Current.GoToAsync("//orders");
             });
         }
         catch (Exception ex)
@@ -374,7 +374,7 @@ public class OrderDetailViewModel : INotifyPropertyChanged
 
     private void Back()
     {
-        Shell.Current?.GoToAsync("..");
+        Shell.Current?.GoToAsync("//orders");
     }
 
     private string GetStatusDisplayName(string status)

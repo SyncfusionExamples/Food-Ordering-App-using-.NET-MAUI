@@ -1,6 +1,8 @@
 ﻿using FoodOrderingApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using System.Linq;
 
 namespace FoodOrderingApp;
 
@@ -13,38 +15,99 @@ public partial class App : Microsoft.Maui.Controls.Application
         InitializeComponent();
 
         _authService = authService;
-
-        MainPage = new AppShell();
     }
 
-    protected override async void OnStart()
+    // Helper to access the currently active Window (replaces the nonexistent 'MainWindow')
+    private Microsoft.Maui.Controls.Window? MainWindow => Microsoft.Maui.Controls.Application.Current?.Windows?.FirstOrDefault();
+
+    protected override Microsoft.Maui.Controls.Window CreateWindow(IActivationState? activationState)
     {
-        base.OnStart();
-        await InitializeAppAsync();
+        var shell = new AppShell();
+        var window = new Microsoft.Maui.Controls.Window(shell);
+        
+        // Initialize app in background but don't block window creation
+        _ = InitializeAppAsync(shell);
+        
+        return window;
     }
 
-    private async Task InitializeAppAsync() 
+    private async Task InitializeAppAsync(AppShell shell)
     {
-        // Initialize database on app start
-        var dbService = IPlatformApplication.Current?.Services.GetService<IDatabaseService>();
-        if (dbService != null)
+        try
         {
-            await dbService.InitializeAsync();
-        }
+            System.Diagnostics.Debug.WriteLine("App: Starting initialization...");
+            
+            // Initialize database first with generous timeout (30 seconds for first run)
+            using (var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30)))
+            {
+                try
+                {
+                    var dbService = IPlatformApplication.Current?.Services.GetService<IDatabaseService>();
+                    if (dbService != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("App: Initializing database...");
+                        await dbService.InitializeAsync();
+                        System.Diagnostics.Debug.WriteLine("App: Database initialized successfully");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("App: DatabaseService not found in DI container");
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    System.Diagnostics.Debug.WriteLine("App: Database initialization timed out after 30 seconds");
+                }
+                catch (Exception dbEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"App: Database initialization error: {dbEx.Message}\n{dbEx.StackTrace}");
+                }
+            }
 
-        // Check if user has a valid session
-        var isLoggedIn = _authService.IsSessionValid();
+            // Load session cache from secure storage
+            System.Diagnostics.Debug.WriteLine("App: Loading session cache...");
+            await _authService.IsSessionValidAsync();  // This loads the cache
+            
+            // Check if user is already logged in
+            var isLoggedIn = _authService.IsSessionValid();
+            System.Diagnostics.Debug.WriteLine($"App: User logged in: {isLoggedIn}");
 
-        await Shell.Current.Navigation.PopToRootAsync();
-        if (isLoggedIn && MainPage is AppShell shell)
-        {
-            //shell.ShowMainTabs();
-            await Shell.Current.GoToAsync("home", animate: false);
+            // Navigate to appropriate page based on session
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    if (isLoggedIn)
+                    {
+                        System.Diagnostics.Debug.WriteLine("App: User is logged in, navigating to home...");
+                        await shell.GoToAsync("//home", animate: false);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("App: User not logged in, navigating to login...");
+                        await shell.GoToAsync("//login", animate: false);
+                    }
+                }
+                catch (Exception navEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"App: Navigation error: {navEx.Message}");
+                    // Fallback to login if navigation fails
+                    try
+                    {
+                        await shell.GoToAsync("//login", animate: false);
+                    }
+                    catch (Exception fallbackEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"App: Fallback navigation error: {fallbackEx.Message}");
+                    }
+                }
+            });
+            
+            System.Diagnostics.Debug.WriteLine("App: Initialization complete");
         }
-        else if (MainPage is AppShell shell2)
+        catch (Exception ex)
         {
-            //shell2.ShowAuthPages();
-            await Shell.Current.GoToAsync("login", animate: false);
+            System.Diagnostics.Debug.WriteLine($"App Initialization error: {ex.Message}\n{ex.StackTrace}");
         }
     }
 }

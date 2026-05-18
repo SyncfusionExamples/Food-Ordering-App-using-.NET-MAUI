@@ -1,23 +1,23 @@
 using Microsoft.Maui.Controls;
-namespace FoodOrderingApp.Views;
-
 using FoodOrderingApp.ViewModels;
+
+namespace FoodOrderingApp.Views;
 
 public partial class ProfilePage : ContentPage
 {
-    public ProfilePage()
+    private readonly ProfileViewModel _viewModel;
+
+    public ProfilePage(ProfileViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+        BindingContext = _viewModel;
     }
 
-    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+    protected override async void OnAppearing()
     {
-        base.OnNavigatedTo(args);
-
-        if (BindingContext is ProfileViewModel viewModel)
-        {
-            await viewModel.LoadProfileAsync();
-            await viewModel.LoadAddressesAsync();
-        }
+        base.OnAppearing();
+        await _viewModel.LoadProfileAsync();
+        await _viewModel.LoadAddressesAsync();
     }
 }

@@ -149,19 +149,31 @@ public class DatabaseService : IDatabaseService
 
         try
         {
-            await Task.Run(() =>
+            // Use a synchronous wrapper for the async action
+            // This properly handles the transaction
+            await _database.RunInTransactionAsync(async (conn) =>
             {
-                _database.RunInTransactionAsync(conn =>
-                {
-                    action().GetAwaiter().GetResult();
-                });
+                await action();
             });
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"Transaction error: {ex.Message}");
             return false;
         }
+    }
+
+    public async Task<int> ClearUsersAsync()
+    {
+        if (_database == null) return 0;
+        return await _database.DeleteAsync<User>("1=1");
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        if (_database == null) return new List<User>();
+        return await _database.Table<User>().ToListAsync();
     }
 
 
