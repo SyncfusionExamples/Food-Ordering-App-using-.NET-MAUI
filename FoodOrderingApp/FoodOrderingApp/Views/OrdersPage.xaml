@@ -19,12 +19,16 @@
 
         <!-- Orders List -->
         <ScrollView Grid.Row="0" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
-            <VerticalStackLayout Padding="12" Spacing="12">
+            <VerticalStackLayout Spacing="0" Padding="0">
+
+                <!-- Header -->
+                <Label Text="Your Orders" FontSize="22" FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
+                   Padding="16,16,16,0" Margin="0,0,0,12"/>
 
                 <!-- Empty State -->
-                <VerticalStackLayout Spacing="16" VerticalOptions="Center" HorizontalOptions="Center"
-                                    IsVisible="{Binding Orders, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter='ShowEmpty'}">
-                    <Label Text="📦" FontSize="48" HorizontalOptions="Center"/>
+                <VerticalStackLayout Spacing="16" VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding Orders, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter='ShowEmpty'}">
+                    <Label Text="📦" FontSize="64" HorizontalOptions="Center"/>
                     <Label Text="{Binding EmptyMessage}" 
                            FontSize="16"
                            TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"
@@ -37,7 +41,7 @@
                             FontAttributes="Bold"
                             Padding="20,12"
                             CornerRadius="8"
-                            WidthRequest="200"
+                            WidthRequest="500"
                             HorizontalOptions="Center"
                             Clicked="OnStartOrderingClicked"/>
                 </VerticalStackLayout>

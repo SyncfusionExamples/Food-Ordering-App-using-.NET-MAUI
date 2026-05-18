@@ -7,160 +7,54 @@
              BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
 
     <Grid RowDefinitions="Auto,*" Padding="0" ColumnSpacing="0">
-        
-        <!-- Header with Search and Filters -->
-        <VerticalStackLayout Grid.Row="0" Padding="16" Spacing="12"
-                            BackgroundColor="{StaticResource PrimaryColor}">
-            
-            <!-- Greeting -->
-            <Label Text="{Binding CurrentUser.FullName, StringFormat='Welcome, {0}!'}" 
-                   FontSize="18" FontAttributes="Bold"
-                   TextColor="White" Margin="0,4,0,0"/>
-
-            <!-- Search Bar -->
-            <Entry x:Name="SearchEntry"
-                   Placeholder="Search restaurants or dishes..."
-                   Text="{Binding SearchQuery}"
-                   PlaceholderColor="#99FFFFFF"
-                   TextColor="White"
-                   BackgroundColor="#33FFFFFF"
-                   FontSize="14"
-                   Margin="12,10"
-                   ClearButtonVisibility="WhileEditing"/>
-
-            <!-- Filters Row -->
-            <HorizontalStackLayout Spacing="12" Margin="0,4,0,0">
-                <Label Text="Filters:" FontSize="12" TextColor="White" 
-                       VerticalOptions="Center" FontAttributes="Bold"/>
-                
-                <!-- Vegetarian Toggle -->
-                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                    <CheckBox IsChecked="{Binding ShowVegetarianOnly}"
-                              Color="White"/>
-                    <Label Text="Vegetarian" FontSize="12" TextColor="White"
-                           VerticalOptions="Center"/>
+        <VerticalStackLayout Grid.Row="0" Padding="6" Spacing="6" BackgroundColor="{StaticResource PrimaryColor}">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <Entry Grid.Column="0" x:Name="SearchEntry" Placeholder="Search restaurants or dishes..." Text="{Binding SearchQuery}" PlaceholderColor="#99FFFFFF" TextColor="White" BackgroundColor="#33FFFFFF" FontSize="14" Margin="0,20,0,20" ClearButtonVisibility="WhileEditing"/>
+                <HorizontalStackLayout Grid.Column="1">
+                    <Label Text="Vegetarian Filters:" FontSize="12" TextColor="White" VerticalOptions="Center" HorizontalOptions="End" FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <CheckBox WidthRequest="16" HeightRequest="16" IsChecked="{Binding ShowVegetarianOnly}"/>
+                    </HorizontalStackLayout>
                 </HorizontalStackLayout>
-            </HorizontalStackLayout>
+            </Grid>
         </VerticalStackLayout>
-
-        <!-- Content Area: Collection View of Items -->
-        <CollectionView Grid.Row="1"
-                       ItemsSource="{Binding FilteredItems}"
-                       SelectionMode="Single"
-                       SelectedItem="{Binding SelectedItem}"
-                       SelectionChangedCommand="{Binding ItemSelectedCommand}"
-                       SelectionChangedCommandParameter="{Binding SelectedItem}"
-                       Margin="8"
-                       VerticalOptions="Fill"
-                       HorizontalOptions="Fill">
-            
+        <CollectionView Grid.Row="1" ItemsSource="{Binding FilteredItems}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" SelectionChanged="OnSelectionChanged" SelectionChangedCommand="{Binding ItemSelectedCommand}" SelectionChangedCommandParameter="{Binding SelectedItem}" Margin="8" VerticalOptions="Fill" HorizontalOptions="Fill">
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical"
-                                HorizontalItemSpacing="8"
-                                VerticalItemSpacing="12"
-                                Span="{OnPlatform Default=2, WinUI=3, MacCatalyst=3}"/>
+                <GridItemsLayout Orientation="Vertical" HorizontalItemSpacing="8" VerticalItemSpacing="12" Span="{OnPlatform Default=2, WinUI=3, MacCatalyst=3}"/>
             </CollectionView.ItemsLayout>
-
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Item">
-                    
-                    <!-- Item Card -->
-                    <Border Padding="0" StrokeShape="RoundRectangle 12"
-                           Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2A2A2A}">
+                    <Border Padding="0" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2A2A2A}">
                         <Border.Shadow>
                             <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="5,5"/>
                         </Border.Shadow>
-
                         <VerticalStackLayout Spacing="8">
-                            
-                            <!-- Image -->
-                            <Image Source="{Binding Image, StringFormat='https://via.placeholder.com/300x200?text={0}'}"
-                                   Aspect="AspectFill"
-                                   HeightRequest="150"
-                                   Margin="0"/>
-
-                            <!-- Vegetarian Badge -->
-                            <Label IsVisible="{Binding IsVeg}"
-                                   Text="🌱 Vegetarian"
-                                   FontSize="10"
-                                   TextColor="#16A34A"
-                                   FontAttributes="Bold"
-                                   Margin="8,0,8,0"/>
-
-                            <!-- Item Details -->
+                            <Image Source="{Binding Image, StringFormat='https://via.placeholder.com/300x200?text={0}'}" Aspect="AspectFill" HeightRequest="150" Margin="0"/>
+                            <Label IsVisible="{Binding IsVeg}" Text="🌱 Vegetarian" FontSize="10" TextColor="#16A34A" FontAttributes="Bold" Margin="8,0,8,0"/>
                             <VerticalStackLayout Spacing="4" Padding="8,0,8,8">
-                                
-                                <!-- Restaurant Name -->
-                                <Label Text="{Binding RestaurantName}"
-                                       FontSize="12"
-                                       TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"
-                                       FontAttributes="None"
-                                       LineBreakMode="TailTruncation"/>
-
-                                <!-- Item Name -->
-                                <Label Text="{Binding ItemName}"
-                                       FontSize="14"
-                                       FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                       LineBreakMode="TailTruncation"/>
-
-                                <!-- Rating and Price Row -->
+                                <Label Text="{Binding RestaurantName}" FontSize="12" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" FontAttributes="None" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding ItemName}" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="TailTruncation"/>
                                 <HorizontalStackLayout Spacing="12" Margin="0,4,0,0">
-                                    
-                                    <!-- Rating -->
                                     <HorizontalStackLayout Spacing="2" VerticalOptions="Center">
-                                        <Label Text="⭐"
-                                               FontSize="12"
-                                               VerticalOptions="Center"/>
-                                        <Label Text="{Binding Rating, StringFormat='{0:F1}'}"
-                                               FontSize="11"
-                                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                               VerticalOptions="Center"
-                                               FontAttributes="Bold"/>
+                                        <Label Text="⭐" FontSize="12" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Rating, StringFormat='{0:F1}'}" FontSize="11" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" VerticalOptions="Center" FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
-
-                                    <!-- Price -->
-                                    <Label Text="{Binding Price, StringFormat='₹{0:F0}'}"
-                                           FontSize="13"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource PrimaryColor}"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center"/>
+                                    <Label Text="{Binding Price, StringFormat='₹{0:F0}'}" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource PrimaryColor}" HorizontalOptions="End" VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
-
-                                <!-- Cuisine -->
-                                <Label Text="{Binding Cuisine}"
-                                       FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"
-                                       Margin="0,4,0,0"/>
+                                <Label Text="{Binding Cuisine}" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" Margin="0,4,0,0"/>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
-            <!-- Empty State -->
             <CollectionView.EmptyView>
-                <VerticalStackLayout Padding="20" Spacing="16" VerticalOptions="Center"
-                                    HorizontalOptions="Fill">
+                <VerticalStackLayout Padding="20" Spacing="16" VerticalOptions="Center" HorizontalOptions="Fill">
                     <Label Text="😔" FontSize="64" HorizontalOptions="Center"/>
-                    <Label Text="No items found" FontSize="16" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                           HorizontalTextAlignment="Center"/>
-                    <Label Text="Try adjusting your search or filters" FontSize="12"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}"
-                           HorizontalTextAlignment="Center"/>
+                    <Label Text="No items found" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" HorizontalTextAlignment="Center"/>
+                    <Label Text="Try adjusting your search or filters" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
         </CollectionView>
-
-        <!-- Loading Indicator -->
-        <ActivityIndicator Grid.Row="1"
-                          IsRunning="{Binding IsLoading}"
-                          IsVisible="{Binding IsLoading}"
-                          Color="{StaticResource PrimaryColor}"
-                          VerticalOptions="Center"
-                          HorizontalOptions="Center"/>
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource PrimaryColor}" VerticalOptions="Center" HorizontalOptions="Center"/>
     </Grid>
 </ContentPage>

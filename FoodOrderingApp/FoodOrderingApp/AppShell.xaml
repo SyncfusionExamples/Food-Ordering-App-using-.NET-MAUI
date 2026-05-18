@@ -7,42 +7,35 @@
     FlyoutBehavior="Disabled"
     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
 
-    <!-- Login Page - Auth Entry Point -->
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="login" />
 
-    <!-- Sign Up Page -->
     <ShellContent
         Title="Sign Up"
         ContentTemplate="{DataTemplate local:SignUpPage}"
         Route="signup" />
 
-    <!-- Main Shell Content with Tabs -->
     <TabBar>
-        <!-- Home Tab -->
         <ShellContent
             Title="Home"
             Icon="home.png"
             ContentTemplate="{DataTemplate local:HomePage}"
             Route="home" />
 
-        <!-- Cart Tab -->
         <ShellContent
             Title="Cart"
             Icon="cart.png"
             ContentTemplate="{DataTemplate local:CartPage}"
             Route="cart" />
 
-        <!-- Orders Tab -->
         <ShellContent
             Title="Orders"
             Icon="orders.png"
             ContentTemplate="{DataTemplate local:OrdersPage}"
             Route="orders" />
 
-        <!-- Profile Tab -->
         <ShellContent
             Title="Profile"
             Icon="profile.png"
@@ -50,7 +43,6 @@
             Route="profile" />
     </TabBar>
 
-    <!-- Modal Routes for Detail Pages -->
     <ShellContent
         Title="Item Detail"
         ContentTemplate="{DataTemplate local:ItemDetailPopup}"
@@ -70,5 +62,4 @@
         Title="Address Form"
         ContentTemplate="{DataTemplate local:AddressFormPopup}"
         Route="addressform" />
-
 </Shell>

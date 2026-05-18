@@ -90,7 +90,7 @@
 
                 <!-- Empty State -->
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Padding="20" Spacing="16">
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20" Spacing="16">
                         <Label Text="🛒" FontSize="64" HorizontalOptions="Center"/>
                         <Label Text="Your cart is empty" FontSize="18" FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
@@ -100,6 +100,7 @@
                                HorizontalTextAlignment="Center"
                                Margin="0,0,0,12"/>
                         <Button Text="Continue Shopping"
+                                WidthRequest="500"
                                 Command="{Binding ContinueShoppingCommand}"
                                 BackgroundColor="{StaticResource PrimaryColor}"
                                 TextColor="White"

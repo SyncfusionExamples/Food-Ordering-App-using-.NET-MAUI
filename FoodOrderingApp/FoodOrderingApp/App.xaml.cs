@@ -1,8 +1,4 @@
 ﻿using FoodOrderingApp.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using System.Linq;
 
 namespace FoodOrderingApp;
 
@@ -17,7 +13,6 @@ public partial class App : Microsoft.Maui.Controls.Application
         _authService = authService;
     }
 
-    // Helper to access the currently active Window (replaces the nonexistent 'MainWindow')
     private Microsoft.Maui.Controls.Window? MainWindow => Microsoft.Maui.Controls.Application.Current?.Windows?.FirstOrDefault();
 
     protected override Microsoft.Maui.Controls.Window CreateWindow(IActivationState? activationState)
@@ -25,7 +20,6 @@ public partial class App : Microsoft.Maui.Controls.Application
         var shell = new AppShell();
         var window = new Microsoft.Maui.Controls.Window(shell);
         
-        // Initialize app in background but don't block window creation
         _ = InitializeAppAsync(shell);
         
         return window;
@@ -36,8 +30,6 @@ public partial class App : Microsoft.Maui.Controls.Application
         try
         {
             System.Diagnostics.Debug.WriteLine("App: Starting initialization...");
-            
-            // Initialize database first with generous timeout (30 seconds for first run)
             using (var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30)))
             {
                 try
@@ -64,15 +56,12 @@ public partial class App : Microsoft.Maui.Controls.Application
                 }
             }
 
-            // Load session cache from secure storage
             System.Diagnostics.Debug.WriteLine("App: Loading session cache...");
-            await _authService.IsSessionValidAsync();  // This loads the cache
+            await _authService.IsSessionValidAsync();
             
-            // Check if user is already logged in
             var isLoggedIn = _authService.IsSessionValid();
             System.Diagnostics.Debug.WriteLine($"App: User logged in: {isLoggedIn}");
 
-            // Navigate to appropriate page based on session
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 try
@@ -91,7 +80,6 @@ public partial class App : Microsoft.Maui.Controls.Application
                 catch (Exception navEx)
                 {
                     System.Diagnostics.Debug.WriteLine($"App: Navigation error: {navEx.Message}");
-                    // Fallback to login if navigation fails
                     try
                     {
                         await shell.GoToAsync("//login", animate: false);
