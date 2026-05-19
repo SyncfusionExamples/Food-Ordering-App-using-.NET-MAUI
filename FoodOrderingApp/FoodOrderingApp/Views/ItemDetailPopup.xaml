@@ -22,7 +22,7 @@
                     <HorizontalStackLayout HorizontalOptions="End">
                         <Button Text="✕" Command="{Binding CloseCommand}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" FontSize="20" Padding="0" WidthRequest="40" HeightRequest="40"/>
                     </HorizontalStackLayout>
-                    <Image Source="{Binding Item.Image, StringFormat='https://via.placeholder.com/400x300?text={0}'}" Aspect="AspectFill" HeightRequest="250" Margin="-20,0,-20,0"/>
+                    <Image Source="{Binding Item.Image}" Aspect="AspectFill" HeightRequest="250" Margin="-20,0,-20,0"/>
                     <Label Text="{Binding Item.RestaurantName}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Label Text="{Binding Item.ItemName}" FontSize="22" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="WordWrap"/>
                     <Label IsVisible="{Binding Item.IsVeg}" Text="🌱 Vegetarian" FontSize="11" TextColor="#16A34A" FontAttributes="Bold"/>

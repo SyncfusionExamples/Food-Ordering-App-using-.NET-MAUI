@@ -29,7 +29,7 @@
                             <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="5,5"/>
                         </Border.Shadow>
                         <VerticalStackLayout Spacing="8">
-                            <Image Source="{Binding Image, StringFormat='https://via.placeholder.com/300x200?text={0}'}" Aspect="AspectFill" HeightRequest="150" Margin="0"/>
+                            <Image Source="{Binding Item.Image}" Aspect="AspectFill" HeightRequest="150" Margin="0"/>
                             <Label IsVisible="{Binding IsVeg}" Text="🌱 Vegetarian" FontSize="10" TextColor="#16A34A" FontAttributes="Bold" Margin="8,0,8,0"/>
                             <VerticalStackLayout Spacing="4" Padding="8,0,8,8">
                                 <Label Text="{Binding RestaurantName}" FontSize="12" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" FontAttributes="None" LineBreakMode="TailTruncation"/>

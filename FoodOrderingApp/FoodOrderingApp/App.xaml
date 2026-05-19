@@ -81,7 +81,14 @@
                 <Setter Property="PlaceholderColor" Value="{StaticResource TextColorSecondary}" />
             </Style>
 
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource LightBackgroundColor}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource PrimaryColor}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextColorSecondary}" />
+            </Style>
+
             <!-- Value Converters -->
+            <converters:BoolToTextConverter x:Key="BoolToTextConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
