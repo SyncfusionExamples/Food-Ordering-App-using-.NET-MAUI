@@ -20,25 +20,21 @@
     <TabBar>
         <ShellContent
             Title="Home"
-            Icon="home.png"
             ContentTemplate="{DataTemplate local:HomePage}"
             Route="home" />
 
         <ShellContent
             Title="Cart"
-            Icon="cart.png"
             ContentTemplate="{DataTemplate local:CartPage}"
             Route="cart" />
 
         <ShellContent
             Title="Orders"
-            Icon="orders.png"
             ContentTemplate="{DataTemplate local:OrdersPage}"
             Route="orders" />
 
         <ShellContent
             Title="Profile"
-            Icon="profile.png"
             ContentTemplate="{DataTemplate local:ProfilePage}"
             Route="profile" />
     </TabBar>

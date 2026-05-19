@@ -105,12 +105,21 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         try
         {
+            ResetFields();
             await Shell.Current.GoToAsync("//signup");
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Navigation error: {ex.Message}";
         }
+    }
+
+    public void ResetFields()
+    {
+        Email = string.Empty;
+        Password = string.Empty;
+        ErrorMessage = string.Empty;
+        IsPasswordVisible = false;
     }
 
     private void TogglePasswordVisibility()

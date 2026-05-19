@@ -19,10 +19,10 @@
             </Border.Shadow>
             <ScrollView>
                 <VerticalStackLayout Spacing="16" Padding="20">
-                    <HorizontalStackLayout HorizontalOptions="End">
-                        <Button Text="✕" Command="{Binding CancelCommand}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" FontSize="20" Padding="0" WidthRequest="40" HeightRequest="40"/>
-                    </HorizontalStackLayout>
-                    <Label Text="Complete Your Payment" FontSize="20" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                    <Grid>
+                        <Label Text="Complete Your Payment" FontSize="20" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                        <Button Text="✕" Command="{Binding CancelCommand}" VerticalOptions="Start" HorizontalOptions="End" CornerRadius="16" Padding="0,0,0,2" BackgroundColor="#F9F9F9" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" FontSize="20" WidthRequest="35" HeightRequest="35"/>
+                    </Grid>
                     <Border IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" Stroke="#FF6B6B" BackgroundColor="#FFE0E0" StrokeShape="RoundRectangle 8" Padding="12">
                         <Label Text="{Binding ErrorMessage}" TextColor="#CC0000" FontSize="12"/>
                     </Border>

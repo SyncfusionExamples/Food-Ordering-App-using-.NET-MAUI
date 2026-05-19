@@ -138,7 +138,19 @@ public partial class SignUpViewModel : INotifyPropertyChanged
 
     private void NavigateToLogin()
     {
+        ResetFields();
         Shell.Current?.GoToAsync("//login");
+    }
+
+    public void ResetFields()
+    {
+        FullName = string.Empty;
+        Email = string.Empty;
+        Password = string.Empty;
+        ConfirmPassword = string.Empty;
+        ErrorMessage = string.Empty;
+        IsPasswordVisible = false;
+        IsConfirmPasswordVisible = false;
     }
 
     private void TogglePasswordVisibility()

@@ -24,23 +24,25 @@
                     <Label Text="{Binding ErrorMessage}" TextColor="#CC0000" FontSize="12"/>
                 </Border>
                 <VerticalStackLayout Spacing="8">
-                    <inputLayout:SfTextInputLayout Hint="Full Name" ContainerType="Filled">
+                    <inputLayout:SfTextInputLayout Hint="Full Name" ReserveSpaceForAssistiveLabels="False" ContainerBackground="#f3f3f6" ContainerType="Filled">
                         <Entry x:Name="FullNameEntry" Text="{Binding FullName}" Placeholder="Enter your full name" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}" />
                     </inputLayout:SfTextInputLayout>
                 </VerticalStackLayout>
                 <VerticalStackLayout Spacing="8">
-                    <inputLayout:SfTextInputLayout Hint="Email Address" ContainerType="Filled">
+                    <inputLayout:SfTextInputLayout Hint="Email Address" ReserveSpaceForAssistiveLabels="False" ContainerBackground="#f3f3f6" ContainerType="Filled">
                         <Entry x:Name="EmailEntry" Text="{Binding Email}" Placeholder="Enter your email" Keyboard="Email" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}" />
                     </inputLayout:SfTextInputLayout>
                 </VerticalStackLayout>
-                <VerticalStackLayout Spacing="0">
-                    <inputLayout:SfTextInputLayout Hint="Password" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
+                <VerticalStackLayout Spacing="8">
+                    <inputLayout:SfTextInputLayout Hint="Password" HasError="True" ErrorText="Minimum 8 characters" ContainerBackground="#f3f3f6" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
                         <Entry Text="{Binding Password}" IsPassword="True" Placeholder="Enter your password" Keyboard="Default" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}" />
+                        <inputLayout:SfTextInputLayout.ErrorLabelStyle>
+                            <inputLayout:LabelStyle FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#999999}"></inputLayout:LabelStyle>
+                        </inputLayout:SfTextInputLayout.ErrorLabelStyle>
                     </inputLayout:SfTextInputLayout>
-                    <Label Text="Minimum 8 characters" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#999999}" />
                 </VerticalStackLayout>
-                <VerticalStackLayout Padding="0,10,0,0" Spacing="8">
-                    <inputLayout:SfTextInputLayout Hint="Confirm Password" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
+                <VerticalStackLayout Spacing="8">
+                    <inputLayout:SfTextInputLayout Hint="Confirm Password" ReserveSpaceForAssistiveLabels="False" ContainerBackground="#f3f3f6" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
                         <Entry Text="{Binding ConfirmPassword}" IsPassword="True" Placeholder="Re-enter your password" Keyboard="Default" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" Style="{StaticResource EntryStyle}" />
                     </inputLayout:SfTextInputLayout>
                 </VerticalStackLayout>

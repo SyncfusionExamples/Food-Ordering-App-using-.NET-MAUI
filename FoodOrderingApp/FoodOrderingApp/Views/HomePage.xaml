@@ -10,18 +10,18 @@
     <Grid RowDefinitions="Auto,*" Padding="0" ColumnSpacing="0">
         <VerticalStackLayout Grid.Row="0" Padding="6" Spacing="6" BackgroundColor="{StaticResource PrimaryColor}">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
-                <SearchBar Grid.Column="0" x:Name="SearchBar" Placeholder="Search restaurants, cuisines or dishes..." Text="{Binding SearchQuery}" CancelButtonColor="White" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="14" Margin="0,20,0,20" SearchIconColor="White" SearchCommand="{Binding PerformSearchCommand}" />
-                <HorizontalStackLayout Grid.Column="1">
+                <SearchBar Grid.Column="0" x:Name="SearchBar" HorizontalOptions="Start" WidthRequest="500" Placeholder="Search restaurants, cuisines or dishes......" Text="{Binding SearchQuery}" CancelButtonColor="White" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="14" Margin="0,20,0,20" SearchIconColor="White" SearchCommand="{Binding PerformSearchCommand}" />
+                <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End">
                     <Label Text="Veg Only :" FontSize="16" TextColor="White" VerticalOptions="Center" HorizontalOptions="End" FontAttributes="Bold"/>
                     <HorizontalStackLayout Spacing="10" VerticalOptions="Center" Padding="10,10,0,0">
-                        <buttons:SfSwitch IsOn="{Binding ShowVegetarianOnly}" FlowDirection="RightToLeft" AllowIndeterminateState="False" WidthRequest="60" HeightRequest="35">
+                        <buttons:SfSwitch IsOn="{Binding ShowVegetarianOnly}" AllowIndeterminateState="False" WidthRequest="60" HeightRequest="35">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup>
                                     <VisualState x:Name="On">
                                         <VisualState.Setters>
                                             <Setter Property="SwitchSettings">
                                                 <Setter.Value>
-                                                    <buttons:SwitchSettings ThumbBackground="White" ThumbStroke="Green" TrackBackground="Green" TrackStroke="White"/>
+                                                    <buttons:SwitchSettings ThumbBackground="LightGreen" ThumbStroke="Green" TrackBackground="Green" TrackStroke="LightGreen"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </VisualState.Setters>
