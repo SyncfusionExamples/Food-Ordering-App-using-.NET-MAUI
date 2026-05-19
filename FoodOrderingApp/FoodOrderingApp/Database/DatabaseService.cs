@@ -63,8 +63,8 @@ public class DatabaseService : IDatabaseService
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_users_email ON Users(Email)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_items_veg ON Items(IsVeg)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_items_cuisine ON Items(Cuisine)");
-        await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_cart_userid ON Cart(UserId)");
-        await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_cart_itemid ON Cart(ItemId)");
+        await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_cartitems_userid ON CartItems(UserId)");
+        await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_cartitems_itemid ON CartItems(ItemId)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_orders_userid ON Orders(UserId)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_orders_status ON Orders(Status)");
         await _database.ExecuteAsync("CREATE INDEX IF NOT EXISTS idx_orderitems_orderid ON OrderItems(OrderId)");
@@ -155,9 +155,10 @@ public class DatabaseService : IDatabaseService
 
         try
         {
-            await _database.RunInTransactionAsync(async (conn) =>
+            await _database.RunInTransactionAsync(conn =>
             {
-                await action();
+                // Run the async action synchronously inside the transaction
+                action().GetAwaiter().GetResult();
             });
             return true;
         }

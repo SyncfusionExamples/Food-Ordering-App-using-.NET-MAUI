@@ -25,7 +25,7 @@ public class OrderService : IOrderService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return null;
 
@@ -129,7 +129,7 @@ public class OrderService : IOrderService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return new List<Order>();
 
@@ -149,7 +149,7 @@ public class OrderService : IOrderService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return null;
 

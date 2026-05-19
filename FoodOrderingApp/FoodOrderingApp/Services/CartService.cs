@@ -100,7 +100,7 @@ public class CartService : ICartService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return false;
 
@@ -125,7 +125,7 @@ public class CartService : ICartService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return new List<CartItem>();
 
@@ -145,7 +145,7 @@ public class CartService : ICartService
     {
         try
         {
-            var userId = _authService.GetCurrentUserId();
+            var userId = await _authService.GetCurrentUserIdAsync();
             if (userId == null)
                 return 0;
 

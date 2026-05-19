@@ -6,82 +6,28 @@
              Title="Order Details"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
 
-    <!-- Navigation Bar -->
     <Grid RowDefinitions="Auto,*" Padding="0" ColumnSpacing="0">
-        
-        <!-- Header with Back Button -->
-        <VerticalStackLayout Grid.Row="0" Padding="12,16" Spacing="0"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
+        <VerticalStackLayout Grid.Row="0" Padding="12,16" Spacing="0" BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
             <HorizontalStackLayout Spacing="12">
-                <Button Text="‹" 
-                        Command="{Binding BackCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                        FontSize="28"
-                        Padding="0"
-                        WidthRequest="40"
-                        HeightRequest="40"/>
+                <Button Text="‹"  Command="{Binding BackCommand}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" FontSize="28" Padding="0" WidthRequest="40" HeightRequest="40"/>
                 <VerticalStackLayout VerticalOptions="Center">
-                    <Label Text="{Binding OrderIdDisplay}"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                    <Label Text="{Binding OrderIdDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                 </VerticalStackLayout>
             </HorizontalStackLayout>
         </VerticalStackLayout>
-
-        <!-- Content -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="12" Spacing="12">
-
-                <!-- Loading Indicator -->
-                <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                  IsVisible="{Binding IsLoading}"
-                                  Color="{StaticResource PrimaryColor}"
-                                  Scale="1.5"
-                                  VerticalOptions="Center"
-                                  HorizontalOptions="Center"/>
-
-                <!-- Order Header Card -->
-                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                       StrokeShape="RoundRectangle 12"
-                       Padding="12"
-                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
+                <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource PrimaryColor}" Scale="1.5" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" StrokeShape="RoundRectangle 12" Padding="12" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
-
-                        <!-- Date -->
-                        <Label Grid.Column="0" Grid.Row="0"
-                               Text="{Binding FormattedDate}"
-                               FontSize="12"
-                               TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-
-                        <!-- Amount -->
-                        <Label Grid.Column="1" Grid.Row="0"
-                               Text="{Binding FormattedAmount}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource PrimaryColor}"/>
-
-                        <!-- Status Badge -->
-                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
-                               Text="{Binding StatusDisplayName}"
-                               FontSize="13"
-                               FontAttributes="Bold"
-                               TextColor="{Binding StatusColor}"/>
+                        <Label Grid.Column="0" Grid.Row="0" Text="{Binding FormattedDate}" FontSize="12" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                        <Label Grid.Column="1" Grid.Row="0" Text="{Binding FormattedAmount}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryColor}"/>
+                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding StatusDisplayName}" FontSize="13" FontAttributes="Bold" TextColor="{Binding StatusColor}"/>
                     </Grid>
                 </Border>
-
-                <!-- Timeline Section -->
                 <VerticalStackLayout Spacing="8" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
-                    <Label Text="Order Status" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-
-                    <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                           BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}"
-                           StrokeShape="RoundRectangle 12"
-                           Padding="12">
-
+                    <Label Text="Order Status" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                    <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}" StrokeShape="RoundRectangle 12" Padding="12">
                         <VerticalStackLayout Spacing="12">
                             <CollectionView ItemsSource="{Binding Timeline}">
                                 <CollectionView.ItemsLayout>
@@ -90,39 +36,11 @@
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid ColumnDefinitions="40,*" RowDefinitions="Auto,Auto" Padding="0,8" ColumnSpacing="12">
-
-                                            <!-- Timeline Dot -->
-                                            <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                                                   Stroke="{Binding TextColor}"
-                                                   BackgroundColor="{Binding TextColor}"
-                                                   StrokeShape="RoundRectangle 12"
-                                                   Padding="0"
-                                                   WidthRequest="24"
-                                                   HeightRequest="24"
-                                                   VerticalOptions="Start"
-                                                   Margin="0,0,0,0">
-                                                <Label Text="{Binding Icon}"
-                                                       FontSize="12"
-                                                       VerticalOptions="Center"
-                                                       HorizontalOptions="Center"/>
+                                            <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stroke="{Binding TextColor}" BackgroundColor="{Binding TextColor}" StrokeShape="RoundRectangle 12" Padding="0" WidthRequest="24" HeightRequest="24" VerticalOptions="Start" Margin="0,0,0,0">
+                                                <Label Text="{Binding Icon}" FontSize="12" VerticalOptions="Center" HorizontalOptions="Center"/>
                                             </Border>
-
-                                            <!-- Stage Name -->
-                                            <Label Grid.Column="1" Grid.Row="0"
-                                                   Text="{Binding DisplayName}"
-                                                   FontSize="13"
-                                                   FontAttributes="Bold"
-                                                   TextColor="{Binding TextColor}"
-                                                   VerticalOptions="Center"/>
-
-                                            <!-- Timeline Line (if not last item) -->
-                                            <BoxView Grid.Column="0" Grid.Row="1"
-                                                    Color="{Binding LineColor}"
-                                                    WidthRequest="2"
-                                                    HeightRequest="16"
-                                                    HorizontalOptions="Center"
-                                                    VerticalOptions="Start"
-                                                    Margin="11,-8,0,0"/>
+                                            <Label Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="13" FontAttributes="Bold" TextColor="{Binding TextColor}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="0" Grid.Row="1" Color="{Binding LineColor}" WidthRequest="2" HeightRequest="16" HorizontalOptions="Center" VerticalOptions="Start" Margin="11,-8,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
@@ -130,112 +48,59 @@
                         </VerticalStackLayout>
                     </Border>
                 </VerticalStackLayout>
-
-                <!-- Delivery Partner Card -->
-                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                       StrokeShape="RoundRectangle 12"
-                       Padding="12"
-                       IsVisible="{Binding DeliveryPartnerName, Converter={StaticResource StringToBoolConverter}}"
-                       Margin="0,0,0,8">
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" StrokeShape="RoundRectangle 12" Padding="12" IsVisible="{Binding DeliveryPartnerName, Converter={StaticResource StringToBoolConverter}}" Margin="0,0,0,8">
                     <VerticalStackLayout Spacing="12">
-
                         <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                            <Label Text="Delivery Partner" FontSize="14" FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                   VerticalOptions="Center"/>
-                            <Button Text="Refresh" 
-                                    Command="{Binding RefreshLocationCommand}"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{StaticResource PrimaryColor}"
-                                    FontSize="11"
-                                    Padding="8,4"
-                                    HeightRequest="32"/>
+                            <Label Text="Delivery Partner" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" VerticalOptions="Center"/>
+                            <Button Text="Refresh"  Command="{Binding RefreshLocationCommand}" BackgroundColor="Transparent" TextColor="{StaticResource PrimaryColor}" FontSize="11" Padding="8,4" HeightRequest="32"/>
                         </HorizontalStackLayout>
-
                         <VerticalStackLayout Spacing="8">
-                            <!-- Partner Name -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="👤" FontSize="16" WidthRequest="24"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill">
-                                    <Label Text="{Binding DeliveryPartnerName}" FontSize="13" FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                                    <Label Text="{Binding DeliveryPartnerRating}" FontSize="11"
-                                           TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding DeliveryPartnerName}" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                    <Label Text="{Binding DeliveryPartnerRating}" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-
-                            <!-- Phone -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="📞" FontSize="16" WidthRequest="24"/>
-                                <Label Text="{Binding DeliveryPartnerPhone}" FontSize="13"
-                                       TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                       VerticalOptions="Center" HorizontalOptions="Fill"/>
+                                <Label Text="{Binding DeliveryPartnerPhone}" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" VerticalOptions="Center" HorizontalOptions="Fill"/>
                             </HorizontalStackLayout>
-
-                            <!-- Vehicle -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="🚗" FontSize="16" WidthRequest="24"/>
-                                <Label Text="{Binding DeliveryPartnerVehicle}" FontSize="13"
-                                       TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                       VerticalOptions="Center" HorizontalOptions="Fill"/>
+                                <Label Text="{Binding DeliveryPartnerVehicle}" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" VerticalOptions="Center" HorizontalOptions="Fill"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
-
-                <!-- Delivery Info Card -->
-                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                       StrokeShape="RoundRectangle 12"
-                       Padding="12"
-                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" StrokeShape="RoundRectangle 12" Padding="12" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
                     <VerticalStackLayout Spacing="12">
-
-                        <Label Text="Delivery Details" FontSize="14" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-
+                        <Label Text="Delivery Details" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                         <VerticalStackLayout Spacing="8">
-                            <!-- Estimated Time -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="🕐" FontSize="16" WidthRequest="24"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill">
-                                    <Label Text="Estimated Delivery" FontSize="11"
-                                           TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Label Text="{Binding EstimatedDeliveryTime}" FontSize="13" FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                    <Label Text="Estimated Delivery" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding EstimatedDeliveryTime}" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-
-                            <!-- Address -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="📍" FontSize="16" WidthRequest="24"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill">
-                                    <Label Text="Delivery Address" FontSize="11"
-                                           TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Label Text="{Binding DeliveryAddress}" FontSize="13"
-                                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"
-                                           LineBreakMode="WordWrap"/>
+                                    <Label Text="Delivery Address" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding DeliveryAddress}" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="WordWrap"/>
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-
-                            <!-- Restaurant -->
                             <HorizontalStackLayout Spacing="8">
                                 <Label Text="🏪" FontSize="16" WidthRequest="24"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill">
-                                    <Label Text="Restaurant" FontSize="11"
-                                           TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Label Text="{Binding RestaurantName}" FontSize="13" FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                    <Label Text="Restaurant" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding RestaurantName}" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-
-                            <!-- Location Coordinates (for map integration) -->
                             <HorizontalStackLayout Spacing="8" IsVisible="{Binding DeliveryPartnerLatitude, Converter={StaticResource StringToBoolConverter}}" Margin="0,4,0,0">
                                 <Label Text="📡" FontSize="16" WidthRequest="24"/>
-                                <Label FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"
-                                       VerticalOptions="Center">
+                                <Label FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" VerticalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Location: "/>
@@ -249,52 +114,28 @@
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
-
-                <!-- Order Items Section -->
                 <VerticalStackLayout Spacing="8" IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
-                    <Label Text="Order Items" FontSize="14" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-
+                    <Label Text="Order Items" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                     <CollectionView ItemsSource="{Binding OrderItems}">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical" ItemSpacing="4"/>
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
-                                       BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}"
-                                       StrokeShape="RoundRectangle 8"
-                                       Padding="12">
+                                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}" StrokeShape="RoundRectangle 8" Padding="12">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                         <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                            <Label Text="{Binding ItemName}" FontSize="13" FontAttributes="Bold"
-                                                   TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" FontSize="11"
-                                                   TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
+                                            <Label Text="{Binding ItemName}" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
                                         </VerticalStackLayout>
-                                        <Label Grid.Column="1" Text="{Binding FormattedPrice}" FontSize="13" FontAttributes="Bold"
-                                               TextColor="{StaticResource PrimaryColor}"
-                                               VerticalOptions="Center"/>
+                                        <Label Grid.Column="1" Text="{Binding FormattedPrice}" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource PrimaryColor}" VerticalOptions="Center"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
-
-                <!-- Cancel Order Button -->
-                <Button Text="Cancel Order"
-                        Command="{Binding CancelOrderCommand}"
-                        IsVisible="{Binding CanCancelOrder}"
-                        BackgroundColor="#FF6B6B"
-                        TextColor="White"
-                        FontSize="14"
-                        FontAttributes="Bold"
-                        Padding="0,12"
-                        CornerRadius="8"
-                        Margin="0,8,0,0"/>
-
-                <!-- Spacing -->
+                <Button Text="Cancel Order" Command="{Binding CancelOrderCommand}" IsVisible="{Binding CanCancelOrder}" BackgroundColor="#FF6B6B" TextColor="White" FontSize="14" FontAttributes="Bold" Padding="0,12" CornerRadius="8" Margin="0,8,0,0"/>
                 <Label/>
             </VerticalStackLayout>
         </ScrollView>
