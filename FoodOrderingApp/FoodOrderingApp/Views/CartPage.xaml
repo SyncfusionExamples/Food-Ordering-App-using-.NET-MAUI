@@ -18,7 +18,14 @@
                     <DataTemplate x:DataType="local:CartItemViewModel">
                         <Border Padding="12" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#2A2A2A}" Margin="0,0,0,12">
                             <Grid ColumnDefinitions="60,*,80" RowSpacing="12" ColumnSpacing="12">
-                                <Image Grid.Column="0" Source="{Binding Item.Image}" Aspect="AspectFill" HeightRequest="60" WidthRequest="60"/>
+                                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                    <Border StrokeThickness="0" Grid.Column="0" HeightRequest="60" VerticalOptions="Center" WidthRequest="60">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="20" />
+                                        </Border.StrokeShape>
+                                        <Image Source="{Binding Item.Image}" Aspect="AspectFill"/>
+                                    </Border>
+                                </VerticalStackLayout>
                                 <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
                                     <Label Text="{Binding DisplayName}" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="TailTruncation"/>
                                     <Label Text="{Binding RestaurantName}" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" LineBreakMode="TailTruncation"/>
@@ -62,7 +69,7 @@
                 <Label Grid.Column="0" Text="Total:" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
                 <Label Grid.Column="1" Text="{Binding Total, StringFormat='₹{0:F2}'}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource PrimaryColor}"/>
             </Grid>
-            <Button Text="Proceed to Checkout" Command="{Binding CheckoutCommand}" BackgroundColor="{StaticResource PrimaryColor}" TextColor="White" FontSize="16" FontAttributes="Bold" Padding="0,12" CornerRadius="8" Margin="0,8,0,0"/>
+            <Button Text="Proceed to Checkout" WidthRequest="500" Command="{Binding CheckoutCommand}" BackgroundColor="{StaticResource PrimaryColor}" TextColor="White" FontSize="16" FontAttributes="Bold" Padding="0,12" CornerRadius="8" Margin="0,8,0,0"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

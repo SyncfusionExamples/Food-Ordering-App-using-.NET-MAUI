@@ -33,10 +33,26 @@ public class DatabaseService : IDatabaseService
 
         await CreateIndexesAsync();
 
+        await NormalizeImageExtensionsAsync();
         var itemCount = await _database.Table<Item>().CountAsync();
         if (itemCount == 0)
         {
             await SeedDataAsync();
+        }
+    }
+
+    private async Task NormalizeImageExtensionsAsync()
+    {
+        if (_database == null) return;
+
+        try
+        {
+            await _database.ExecuteAsync("UPDATE Items SET Image = REPLACE(Image, '.jpg', '.png') WHERE Image LIKE '%.jpg'");
+            await _database.ExecuteAsync("UPDATE Items SET Image = REPLACE(Image, '.jpeg', '.png') WHERE Image LIKE '%.jpeg'");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"NormalizeImageExtensionsAsync error: {ex.Message}");
         }
     }
 
@@ -61,14 +77,14 @@ public class DatabaseService : IDatabaseService
 
         var items = new List<Item>
         {
-            new() { RestaurantName = "The Burger Loft", ItemName = "Classic Burger", Description = "Juicy beef patty with fresh veggies", Price = 6.50m, IsVeg = false, Cuisine = "American", Rating = 4.8, Image = "burger.png" },
-            new() { RestaurantName = "Pizzeria Artisan", ItemName = "Margherita Pizza", Description = "Fresh mozzarella, basil, tomato", Price = 12.99m, IsVeg = true, Cuisine = "Italian", Rating = 4.6, Image = "pizza.png" },
-            new() { RestaurantName = "Sakura Sushi Bar", ItemName = "Salmon Poke Bowl", Description = "Brown rice, sesame dressing, avocado", Price = 18.25m, IsVeg = false, Cuisine = "Japanese", Rating = 4.9, Image = "sushi.png" },
-            new() { RestaurantName = "Noodle Theory", ItemName = "Pad Thai", Description = "Rice noodles with peanut sauce", Price = 14.50m, IsVeg = true, Cuisine = "Thai", Rating = 4.5, Image = "noodles.png" },
-            new() { RestaurantName = "Green Garden", ItemName = "Buddha Bowl", Description = "Mixed veggies, quinoa, tahini dressing", Price = 11.99m, IsVeg = true, Cuisine = "Healthy", Rating = 4.7, Image = "bowl.png" },
-            new() { RestaurantName = "Smoke & Fire BBQ", ItemName = "Pulled Pork Sandwich", Description = "Slow-smoked pork with coleslaw", Price = 13.50m, IsVeg = false, Cuisine = "American", Rating = 4.4, Image = "bbq.png" },
-            new() { RestaurantName = "Indus Spice", ItemName = "Butter Chicken", Description = "Tender chicken in creamy tomato sauce", Price = 15.99m, IsVeg = false, Cuisine = "Indian", Rating = 4.6, Image = "butter_chicken.png" },
-            new() { RestaurantName = "Sugar Rush", ItemName = "Chocolate Lava Cake", Description = "Warm molten core, vanilla ice cream", Price = 12.00m, IsVeg = true, Cuisine = "Dessert", Rating = 4.9, Image = "cake.png" },
+            new() { RestaurantName = "The Burger Loft", ItemName = "Classic Burger", Description = "Juicy beef patty with fresh veggies", Price = 299.50m, IsVeg = false, Cuisine = "American", Rating = 4.8, Image = "burger.png" },
+            new() { RestaurantName = "Pizzeria Artisan", ItemName = "Margherita Pizza", Description = "Fresh mozzarella, basil, tomato", Price = 399.99m, IsVeg = true, Cuisine = "Italian", Rating = 4.6, Image = "pizza.png" },
+            new() { RestaurantName = "Sakura Sushi Bar", ItemName = "Salmon Poke Bowl", Description = "Brown rice, sesame dressing, avocado", Price = 549.25m, IsVeg = false, Cuisine = "Japanese", Rating = 4.9, Image = "sushi.png" },
+            new() { RestaurantName = "Noodle Theory", ItemName = "Pad Thai", Description = "Rice noodles with peanut sauce", Price = 449.50m, IsVeg = true, Cuisine = "Thai", Rating = 4.5, Image = "noodles.png" },
+            new() { RestaurantName = "Green Garden", ItemName = "Buddha Bowl", Description = "Mixed veggies, quinoa, tahini dressing", Price = 349.99m, IsVeg = true, Cuisine = "Healthy", Rating = 4.7, Image = "bowl.png" },
+            new() { RestaurantName = "Smoke & Fire BBQ", ItemName = "Pulled Pork Sandwich", Description = "Slow-smoked pork with coleslaw", Price = 399.50m, IsVeg = false, Cuisine = "American", Rating = 4.4, Image = "bbq.png" },
+            new() { RestaurantName = "Indus Spice", ItemName = "Butter Chicken", Description = "Tender chicken in creamy tomato sauce", Price = 449.99m, IsVeg = false, Cuisine = "Indian", Rating = 4.6, Image = "butter_chicken.png" },
+            new() { RestaurantName = "Sugar Rush", ItemName = "Chocolate Lava Cake", Description = "Warm molten core, vanilla ice cream", Price = 249.00m, IsVeg = true, Cuisine = "Dessert", Rating = 4.9, Image = "cake.png" },
         };
 
         await _database.InsertAllAsync(items);
