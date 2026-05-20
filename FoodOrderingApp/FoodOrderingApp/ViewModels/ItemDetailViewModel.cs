@@ -139,9 +139,8 @@ public class ItemDetailViewModel : INotifyPropertyChanged
                 SuccessMessage = $"Added {Quantity} {Item.ItemName}(s) to cart!";
                 ShowSuccessMessage = true;
 
-                // Hide success message after 2 seconds and close popup
-                await Task.Delay(500);
-                Close();
+                await Task.Delay(1000);
+                ShowSuccessMessage = false;
             }
         }
         catch (Exception ex)

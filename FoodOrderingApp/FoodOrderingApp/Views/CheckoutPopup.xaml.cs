@@ -14,6 +14,17 @@ public partial class CheckoutPopup : ContentPage
         BindingContext = _viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.ErrorMessage = string.Empty;
+        _viewModel.SuccessMessage = string.Empty;
+        _viewModel.ShowSuccessMessage = false;
+        _viewModel.PaymentProcessing = false;
+        _viewModel.IsLoading = false;
+        _viewModel.SelectedPaymentMethod = PaymentMethod.UPI;
+    }
+
     private void OnUPISelected(object sender, CheckedChangedEventArgs e)
     {
         if (e.Value)
