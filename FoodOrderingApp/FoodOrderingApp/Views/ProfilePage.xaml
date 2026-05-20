@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:FoodOrderingApp.Models"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="FoodOrderingApp.Views.ProfilePage"
              Title="CraveDash"
              BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
@@ -20,12 +21,13 @@
                     <VerticalStackLayout Grid.Column="0" Spacing="12">
                         <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" StrokeShape="RoundRectangle 12" Padding="12">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
-                                <Label Grid.Column="0" Grid.Row="0" Text="Profile Information" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                                <!--<Button Grid.Column="1" Grid.Row="0" Text="{Binding IsEditMode, StringFormat='{0:ischecked=Save,ischecked=Edit}'}" Command="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}, ConverterParameter='Edit'}" BackgroundColor="Transparent" TextColor="{StaticResource PrimaryColor}" FontSize="12" Padding="8,4" IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}"/>-->
-                                <Label Grid.Column="0" Grid.Row="1" Text="Full Name" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                <Entry Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="{Binding FullName}" IsReadOnly="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" Placeholder="Enter full name" PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}" Margin="8,10"/>
-                                <Label Grid.Column="0" Grid.Row="3" Text="Email" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                <Entry Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Text="{Binding Email}" IsReadOnly="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" Placeholder="Enter email" PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}" Margin="8,10"/>
+                                <Label Grid.Column="0" Grid.Row="0" Text="Profile Information" Padding="0,0,0,12" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                <inputLayout:SfTextInputLayout Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Hint="Full Name" ContainerType="Outlined" IsEnabled="{Binding IsEditMode}">
+                                    <Entry Text="{Binding FullName}"  TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                </inputLayout:SfTextInputLayout>
+                                <inputLayout:SfTextInputLayout Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Hint="Email Address" ContainerType="Outlined" IsEnabled="{Binding IsEditMode}">
+                                    <Entry Text="{Binding Email}" Keyboard="Email" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
+                                </inputLayout:SfTextInputLayout>
                             </Grid>
                         </Border>
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsEditMode}">
@@ -95,18 +97,15 @@
                         <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" StrokeShape="RoundRectangle 12" Padding="12">
                             <VerticalStackLayout Spacing="12">
                                 <Label Text="Security" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="Current Password" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Entry IsPassword="True" Text="{Binding OldPassword}" BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" Placeholder="Enter current password" PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}" Margin="8,10"/>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="New Password" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Entry IsPassword="True" Text="{Binding NewPassword}" BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" Placeholder="Enter new password (min 8 chars)" PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}" Margin="8,10"/>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="Confirm Password" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                    <Entry IsPassword="True" Text="{Binding ConfirmPassword}" BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" Placeholder="Confirm new password" PlaceholderColor="{AppThemeBinding Light=#CCCCCC, Dark=#666666}" Margin="8,10"/>
-                                </VerticalStackLayout>
+                                <inputLayout:SfTextInputLayout ReserveSpaceForAssistiveLabels="False" Hint="Current Password" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
+                                    <Entry Text="{Binding OldPassword}" IsPassword="True" Placeholder="Enter current password" Style="{StaticResource EntryStyle}"/>
+                                </inputLayout:SfTextInputLayout>
+                                <inputLayout:SfTextInputLayout ReserveSpaceForAssistiveLabels="False" Hint="New Password" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
+                                    <Entry Text="{Binding NewPassword}" IsPassword="True" Placeholder="Enter new password (min 8 chars)" Style="{StaticResource EntryStyle}"/>
+                                </inputLayout:SfTextInputLayout>
+                                <inputLayout:SfTextInputLayout ReserveSpaceForAssistiveLabels="False" Hint="Confirm Password" ContainerType="Filled" EnablePasswordVisibilityToggle="True">
+                                    <Entry Text="{Binding ConfirmPassword}" IsPassword="True" Placeholder="Confirm new password" Style="{StaticResource EntryStyle}"/>
+                                </inputLayout:SfTextInputLayout>
                                 <Button Text="Change Password" Command="{Binding ChangePasswordCommand}" IsEnabled="{Binding IsChangingPassword, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{StaticResource SecondaryColor}" TextColor="White" FontSize="14" FontAttributes="Bold" Padding="0,12" CornerRadius="8" Margin="0,4,0,0"/>
                             </VerticalStackLayout>
                         </Border>
