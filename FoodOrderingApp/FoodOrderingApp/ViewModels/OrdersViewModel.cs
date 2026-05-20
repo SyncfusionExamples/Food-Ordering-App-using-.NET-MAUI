@@ -44,6 +44,7 @@ public class OrdersViewModel : INotifyPropertyChanged
 
         LoadOrdersCommand = new AsyncRelayCommand(LoadOrdersAsync);
         OrderSelectedCommand = new AsyncRelayCommand<OrderViewModel>(OrderSelectedAsync);
+        Orders.CollectionChanged += (s, e) => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Orders)));
     }
 
     public async Task InitializeAsync()

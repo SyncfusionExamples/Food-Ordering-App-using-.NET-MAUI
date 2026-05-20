@@ -17,6 +17,7 @@ public class OrderDetailViewModel : INotifyPropertyChanged
 {
     private readonly IOrderService _orderService;
     private readonly IMapService _mapService;
+    private readonly Random _random = new Random();
     private int _orderId = 0;
     private bool _isLoading = false;
     private Order? _order;
@@ -160,6 +161,15 @@ public class OrderDetailViewModel : INotifyPropertyChanged
     public ICommand BackCommand { get; }
     public ICommand RefreshLocationCommand { get; }
 
+    private readonly List<(string Name, string Phone, string Vehicle)> _samplePartners = new()
+    {
+        ("Arun Kumar", "98765XXXXX", "Bike TN-09 AB12**"),
+        ("Priya Sharma", "91234XXXXX", "Scooter TN-22 XY56**"),
+        ("Ravi Menon", "99887XXXXX", "Car TN-05 CD43**"),
+        ("Sneha Reddy", "98765XXXXX", "Bike TN-11 EF67**"),
+        ("Karthik Iyer", "90012XXXXX", "Scooter TN-07 GH98**")
+    };
+
     public OrderDetailViewModel(IOrderService orderService, IMapService mapService)
     {
         _orderService = orderService;
@@ -167,6 +177,17 @@ public class OrderDetailViewModel : INotifyPropertyChanged
         CancelOrderCommand = new AsyncRelayCommand(CancelOrderAsync);
         BackCommand = new RelayCommand(Back);
         RefreshLocationCommand = new AsyncRelayCommand(RefreshLocationAsync);
+        AssignRandomPartner();
+    }
+
+    private void AssignRandomPartner()
+    {
+        var partner = _samplePartners[_random.Next(_samplePartners.Count)];
+
+        DeliveryPartnerName = partner.Name;
+        DeliveryPartnerPhone = $" {partner.Phone}";
+        DeliveryPartnerVehicle = $" {partner.Vehicle}";
+        DeliveryPartnerRating = $"⭐ {_random.Next(3, 5)}.{_random.Next(0, 9)}/5.0 ({_random.Next(50, 500)} deliveries)";
     }
 
     private async Task LoadOrderAsync()

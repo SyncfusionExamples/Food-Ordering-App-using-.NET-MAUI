@@ -100,26 +100,6 @@
                                             <Label Text="{Binding DeliveryAddress}" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="WordWrap"/>
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="🏪" FontSize="16" WidthRequest="24"/>
-                                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill">
-                                            <Label Text="Restaurant" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}"/>
-                                            <Label Text="{Binding RestaurantName}" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}"/>
-                                        </VerticalStackLayout>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8" IsVisible="{Binding DeliveryPartnerLatitude, Converter={StaticResource StringToBoolConverter}}" Margin="0,4,0,0">
-                                        <Label Text="📡" FontSize="16" WidthRequest="24"/>
-                                        <Label FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" VerticalOptions="Center">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="Location: "/>
-                                                    <Span Text="{Binding DeliveryPartnerLatitude, StringFormat='{0:F4}'}"/>
-                                                    <Span Text=", "/>
-                                                    <Span Text="{Binding DeliveryPartnerLongitude, StringFormat='{0:F4}'}"/>
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </HorizontalStackLayout>
                                 </VerticalStackLayout>
                             </VerticalStackLayout>
                         </Border>
