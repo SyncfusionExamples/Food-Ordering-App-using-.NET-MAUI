@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FoodOrderingApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FoodOrderingApp.Views"
+    FlyoutBehavior="Disabled"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="login" />
+
+    <ShellContent
+        Title="Sign Up"
+        ContentTemplate="{DataTemplate local:SignUpPage}"
+        Route="signup" />
+
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:HomePage}"
+            Route="home" />
+
+        <ShellContent
+            Title="Cart"
+            ContentTemplate="{DataTemplate local:CartPage}"
+            Route="cart" />
+
+        <ShellContent
+            Title="Orders"
+            ContentTemplate="{DataTemplate local:OrdersPage}"
+            Route="orders" />
+
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate local:ProfilePage}"
+            Route="profile" />
+    </TabBar>
+
+    <ShellContent
+        Title="Item Detail"
+        ContentTemplate="{DataTemplate local:ItemDetailPopup}"
+        Route="itemdetail" />
+
+    <ShellContent
+        Title="Checkout"
+        ContentTemplate="{DataTemplate local:CheckoutPopup}"
+        Route="checkout" />
+
+    <ShellContent
+        Title="Order Detail"
+        ContentTemplate="{DataTemplate local:OrderDetailPage}"
+        Route="orderdetail" />
+
+    <ShellContent
+        Title="Address Form"
+        ContentTemplate="{DataTemplate local:AddressFormPopup}"
+        Route="addressform" />
+</Shell>

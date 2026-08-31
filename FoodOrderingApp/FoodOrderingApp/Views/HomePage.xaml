@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:FoodOrderingApp.Models"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="FoodOrderingApp.Views.HomePage"
+             Title="CraveDash"
+             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackgroundColor}, Dark={StaticResource DarkBackgroundColor}}">
+
+    <Grid RowDefinitions="Auto,*" Padding="0" ColumnSpacing="0">
+        <VerticalStackLayout Grid.Row="0" Padding="6" Spacing="6" BackgroundColor="{StaticResource PrimaryColor}">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <SearchBar Grid.Column="0" x:Name="SearchBar" HorizontalOptions="Start" WidthRequest="500" Placeholder="Search restaurants, cuisines or dishes......" Text="{Binding SearchQuery}" CancelButtonColor="White" PlaceholderColor="White" TextColor="White" BackgroundColor="Transparent" FontSize="14" Margin="0,20,0,20" SearchIconColor="White" SearchCommand="{Binding PerformSearchCommand}" />
+                <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End">
+                    <Label Text="Veg Only :" FontSize="16" TextColor="White" VerticalOptions="Center" HorizontalOptions="End" FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center" Padding="10,10,0,0">
+                        <buttons:SfSwitch IsOn="{Binding ShowVegetarianOnly}" AllowIndeterminateState="False" WidthRequest="60" HeightRequest="35">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup>
+                                    <VisualState x:Name="On">
+                                        <VisualState.Setters>
+                                            <Setter Property="SwitchSettings">
+                                                <Setter.Value>
+                                                    <buttons:SwitchSettings ThumbBackground="LightGreen" ThumbStroke="Green" TrackBackground="Green" TrackStroke="LightGreen"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Off">
+                                        <VisualState.Setters>
+                                            <Setter Property="SwitchSettings">
+                                                <Setter.Value>
+                                                    <buttons:SwitchSettings ThumbBackground="LightGray" ThumbStroke="OrangeRed" TrackBackground="OrangeRed" TrackStroke="LightGray"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </buttons:SfSwitch>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding FilteredItems}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" SelectionChanged="OnSelectionChanged" SelectionChangedCommand="{Binding ItemSelectedCommand}" SelectionChangedCommandParameter="{Binding SelectedItem}" Margin="8" VerticalOptions="Fill" HorizontalOptions="Fill">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" HorizontalItemSpacing="8" VerticalItemSpacing="12" Span="{OnPlatform Default=2, WinUI=4, MacCatalyst=3}"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Item">
+                    <Border Padding="0" StrokeShape="RoundRectangle 8" Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2A2A2A}">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="5,10" Radius="10" Opacity="0.3" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="8">
+                            <Image Source="{Binding Image}" Aspect="AspectFill" HeightRequest="250" Margin="0" BackgroundColor="#EEEEEE"/>
+                            <Label IsVisible="{Binding IsVeg}" Text="🌱 Vegetarian" FontSize="10" TextColor="#16A34A" FontAttributes="Bold" Margin="8,0,8,0"/>
+                            <VerticalStackLayout Spacing="4" Padding="8,0,8,8">
+                                <Label Text="{Binding RestaurantName}" FontSize="12" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" FontAttributes="None" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding ItemName}" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" LineBreakMode="TailTruncation"/>
+                                <HorizontalStackLayout Spacing="12" Margin="0,4,0,0">
+                                    <HorizontalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <Label Text="⭐" FontSize="12" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Rating, StringFormat='{0:F1}'}" FontSize="11" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" VerticalOptions="Center" FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding Price, StringFormat='₹{0:F0}'}" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource PrimaryColor}" HorizontalOptions="End" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding Cuisine}" FontSize="11" TextColor="{AppThemeBinding Light=#999999, Dark=#AAAAAA}" Margin="0,4,0,0"/>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20" Spacing="16" VerticalOptions="Center" HorizontalOptions="Fill">
+                    <Label Text="😔" FontSize="64" HorizontalOptions="Center"/>
+                    <Label Text="No items found" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource DarkTextColor}, Dark={StaticResource LightTextColor}}" HorizontalTextAlignment="Center"/>
+                    <Label Text="Try adjusting your search or filters" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#CCCCCC}" HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource PrimaryColor}" VerticalOptions="Center" HorizontalOptions="Center"/>
+    </Grid>
+</ContentPage>
