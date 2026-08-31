@@ -80,7 +80,7 @@ CraveDash supports a variety of food delivery and restaurant ordering workflows.
 
 ## Output
 
-![FoodOrderingApplication]()
+![FoodOrderingApplication](https://github.com/user-attachments/assets/560d7234-5340-4e0d-a1e7-9b5d15bc8350)
 
 ## Troubleshooting
 
